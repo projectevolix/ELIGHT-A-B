@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    
+  },
+  "include": [
+    "src/**/*",  // This includes all .ts files in src
+    "src/types/**/*.d.ts" // This explicitly includes your type definitions
+  ],
+  "exclude": ["node_modules", "dist"]
+}
