@@ -14,11 +14,4 @@ router.get(
   userController.getProfile
 );
 
-// /api/users/admin/dashboard
-router.get(
-  '/admin/dashboard',
-  authorize([ROLES.Admin]),
-  userController.getAdminDashboard
-);
-
 export default router;

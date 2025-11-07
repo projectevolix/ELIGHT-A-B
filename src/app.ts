@@ -10,6 +10,7 @@ import './config/passport.config';
 import { errorHandler } from './middleware/errorHandler.middleware';
 import { logger } from './config/logger.config';
 import morgan from 'morgan';
+import treatmentRouter from './routes/treatment.routes';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(morgan(morganFormat, { stream }));
 app.get('/api/health', (req, res) => res.json({ status: 'UP' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/treatments', treatmentRouter); 
 
 app.use(errorHandler);
 
