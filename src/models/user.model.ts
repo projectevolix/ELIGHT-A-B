@@ -3,11 +3,16 @@ import bcrypt from 'bcryptjs';
 import { UserRole, ROLE_LIST, ROLES } from '../constants/roles.constants';
 
 export interface IUser extends Document {
-  _id: Types.ObjectId; 
+  _id: Types.ObjectId;
   email: string;
-  name: string;
+  f_name: string;
+  l_name: string;
   phoneNumber?: string; 
-  address?: string;    
+  address?: string;  
+  id_card_number: string;
+  birthday?: Date;
+  description?: string;
+  is_active?: boolean;
   password?: string;
   googleId?: string;
   roles: UserRole[];
@@ -17,7 +22,12 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  name: {
+  f_name: {
+    type: String,
+    required: true, 
+    trim: true,
+  },
+  l_name: {
     type: String,
     required: true, 
     trim: true,
@@ -32,13 +42,27 @@ const userSchema = new Schema<IUser>({
     required: false, 
     trim: true,
   },
+  id_card_number : {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  birthday: {
+    type: Date,
+    required: false,
+  },
+  description: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  is_active: { type: Boolean, default: true },
   password: { type: String, required: false, select: false },
   googleId: { type: String, required: false, unique: true, sparse: true },
   roles: { type: [String], enum: ROLE_LIST, default: [ROLES.User] },
   refreshTokens: [{ type: String, select: false }],
 }, { timestamps: true });
 
-// --- Mongoose Middleware & Methods ---
 
 // Hash password before saving
 userSchema.pre<IUser>('save', async function (next) {

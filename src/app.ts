@@ -40,7 +40,6 @@ app.get('/api/health', (req, res) => res.json({ status: 'UP' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-// --- ADD ERROR HANDLER AS THE LAST MIDDLEWARE ---
 app.use(errorHandler);
 
 export default app;
