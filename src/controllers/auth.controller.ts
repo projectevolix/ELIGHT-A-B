@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import * as authService from "../services/auth.service";
-import { IUser } from "../models/user.model";
+import { IUser, User } from "../models/user.model";
 import { CLIENT_URL, NODE_ENV } from "../config/env.config";
 import { ApiResponse } from "../utils/ApiResponse";
 import { UnauthorizedError } from "../utils/ApiError";
+import crypto from 'crypto';
+import { sendEmail } from "../services/email.service";
 
 const cookieOptions = {
   httpOnly: true,
@@ -121,3 +123,88 @@ export const logout = asyncHandler(
     res.status(204).send();
   }
 );
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  console.log(email);
+  try {
+    const user = await User.findOne({ email });
+
+    // Don't tell the user if the email exists or not (security)
+    if (!user) {
+      return res.status(200).json({ message: 'If user exists, email has been sent.' });
+    }
+
+    // 1. Generate a raw token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    // 2. Hash token and save to user in DB
+    user.passwordResetToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+    user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); 
+    await user.save();
+
+    // 3. Create reset URL (this link goes to your frontend)
+    const resetURL = `${CLIENT_URL}/reset-password/${resetToken}`;
+
+    const message = `
+      <p>Please click the link below to reset your password:</p>
+      <a href="${resetURL}" target="_blank">Reset Password</a>
+      <p>This link is valid for 10 minutes.</p>
+    `;
+
+    // 4. Send the email
+    await sendEmail({
+      to: user.email,
+      subject: 'Password Reset Request',
+      text: `Reset your password here: ${resetURL}`,
+      html: message,
+    });
+
+    res.status(200).json({ message: 'If user exists, email has been sent.' });
+  } catch (error) {
+    // Clear tokens on error
+    const user = await User.findOne({ email });
+     if (user) {
+         user.passwordResetToken = undefined;
+         user.passwordResetExpires = undefined;
+         await user.save();
+     }
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { password } = req.body;
+  const { token } = req.params;
+
+  try {
+    // 1. Hash the token from the URL
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
+
+    // 2. Find user by hashed token and check expiration
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    // 3. Set new password
+    user.password = password; // The 'pre-save' hook will hash this
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
