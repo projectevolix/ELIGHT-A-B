@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError';
 import { NODE_ENV } from '../config/env.config';
 import mongoose from 'mongoose'; 
+import { logger } from '../config/logger.config';
 
 export const errorHandler = (
   err: Error, 
@@ -34,6 +35,7 @@ export const errorHandler = (
   else {
     // Log any other unexpected errors
     console.error('UNHANDLED ERROR:', err);
+    logger.error(`UNHANDLED ERROR: ${err.message}`, { stack: err.stack });
   }
 
   // Prepare the response

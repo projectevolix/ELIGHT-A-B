@@ -11,6 +11,8 @@ import { errorHandler } from './middleware/errorHandler.middleware';
 import { logger } from './config/logger.config';
 import morgan from 'morgan';
 import treatmentRouter from './routes/treatment.routes';
+import bookingRouter from './routes/booking.routes';
+import adminRouter from './routes/admin.routes';
 
 const app = express();
 
@@ -41,6 +43,8 @@ app.get('/api/health', (req, res) => res.json({ status: 'UP' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/treatments', treatmentRouter); 
+app.use('/api/bookings', bookingRouter);
+app.use('/api/admin', adminRouter);
 
 app.use(errorHandler);
 

@@ -3,6 +3,7 @@ import { UserRole } from '../constants/roles.constants';
 // 1. Define and Export your payload interface
 // This lets you import it in other files if you ever need to.
 export interface JwtPayload {
+  [x: string]: ObjectId;
   id: string;
   roles: UserRole[];
 }
