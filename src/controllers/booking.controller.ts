@@ -42,22 +42,53 @@ export const createBooking = async (
   }
 };
 
+export const getAllBookings = async(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // --- 1. Parse Query Parameters ---
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const search = req.query.search as string || "";
+
+    // --- 2. Call Service with Options ---
+    const result = await bookingService.getAllBookings({
+      page,
+      limit,
+      search,
+    });
+
+    // --- 3. Send Paginated Response ---
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: "Bookings retrieved successfully",
+      data: result.data,
+      meta: result.meta, 
+    });
+
+  } catch (error) {
+    next(error); 
+  }
+};
+
 export const deleteBooking = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-    try {
-        
-        const { bookingId } = req.params;
+  try {
+    const { bookingId } = req.params;
 
-        if (!Types.ObjectId.isValid(bookingId)) {
-            return res.status(400).json({ message: "Invalid booking ID" });
-        }
-        await bookingService.deleteBooking(bookingId);
-        res.status(200).json({ message: "Booking deleted successfully" });
-    } catch (error) {
-        logger.error("Error deleting booking:", error);
-        next(error);
+    if (!Types.ObjectId.isValid(bookingId)) {
+      return res.status(400).json({ message: "Invalid booking ID" });
     }
+    await bookingService.deleteBooking(bookingId);
+    res.status(200).json({ message: "Booking deleted successfully" });
+  } catch (error) {
+    logger.error("Error deleting booking:", error);
+    next(error);
+  }
 };

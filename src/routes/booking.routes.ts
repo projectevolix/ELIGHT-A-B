@@ -13,9 +13,15 @@ router.post(
     bookingController.createBooking
 );
 
+router.get(
+    '/get-all',
+    authorize([ROLES.Admin]),
+    bookingController.getAllBookings
+);
+
 router.delete(
     '/:bookingId',
-    authorize([ROLES.Admin]),
+    authorize([ROLES.User,ROLES.Admin]),
     bookingController.deleteBooking
 );
 
