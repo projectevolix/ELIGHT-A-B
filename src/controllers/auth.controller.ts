@@ -4,7 +4,7 @@ import { IUser, User } from "../models/user.model";
 import { CLIENT_URL, NODE_ENV } from "../config/env.config";
 import { ApiResponse } from "../utils/ApiResponse";
 import { UnauthorizedError } from "../utils/ApiError";
-import crypto from 'crypto';
+import crypto from "crypto";
 import { sendEmail } from "../services/email.service";
 
 const cookieOptions = {
@@ -31,14 +31,14 @@ export const register = asyncHandler(
     const {
       email,
       password,
-      f_name, 
-      l_name, 
+      f_name,
+      l_name,
       phoneNumber,
       address,
       is_active,
-      id_card_number, 
+      id_card_number,
       birthday,
-      description, 
+      description,
     } = req.body;
 
     await authService.registerUser(
@@ -78,7 +78,9 @@ export const login = asyncHandler(
 
     res
       .status(200)
-      .json(new ApiResponse(200, { accessToken }, "Login successful"));
+      .json(
+        new ApiResponse(200, { accessToken, refreshToken }, "Login successful")
+      );
   }
 );
 
@@ -98,10 +100,24 @@ export const googleCallback = asyncHandler(
 
 export const refresh = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.jwt_refresh;
+    // 1. Try to get token from Cookie
+    let refreshToken = req.cookies.jwt_refresh;
+
+    // 2. If no cookie, try to get from Authorization Bearer header
+    if (
+      !refreshToken &&
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
+      refreshToken = req.headers.authorization.split(" ")[1];
+    }
+
+    // 3. If still no token, throw error
     if (!refreshToken) {
       throw new UnauthorizedError("No refresh token provided.");
     }
+
+    // 4. Call service (which should verify the token with JWT_REFRESH_SECRET)
     const newAccessToken = await authService.refreshUserToken(refreshToken);
 
     res
@@ -132,18 +148,20 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     // Don't tell the user if the email exists or not (security)
     if (!user) {
-      return res.status(200).json({ message: 'If user exists, email has been sent.' });
+      return res
+        .status(200)
+        .json({ message: "If user exists, email has been sent." });
     }
 
     // 1. Generate a raw token
-    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetToken = crypto.randomBytes(32).toString("hex");
 
     // 2. Hash token and save to user in DB
     user.passwordResetToken = crypto
-      .createHash('sha256')
+      .createHash("sha256")
       .update(resetToken)
-      .digest('hex');
-    user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); 
+      .digest("hex");
+    user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
     // 3. Create reset URL (this link goes to your frontend)
@@ -158,21 +176,21 @@ export const forgotPassword = async (req: Request, res: Response) => {
     // 4. Send the email
     await sendEmail({
       to: user.email,
-      subject: 'Password Reset Request',
+      subject: "Password Reset Request",
       text: `Reset your password here: ${resetURL}`,
       html: message,
     });
 
-    res.status(200).json({ message: 'If user exists, email has been sent.' });
+    res.status(200).json({ message: "If user exists, email has been sent." });
   } catch (error) {
     // Clear tokens on error
     const user = await User.findOne({ email });
-     if (user) {
-         user.passwordResetToken = undefined;
-         user.passwordResetExpires = undefined;
-         await user.save();
-     }
-    res.status(500).json({ message: 'Server error' });
+    if (user) {
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+    }
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -182,10 +200,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 
   try {
     // 1. Hash the token from the URL
-    const hashedToken = crypto
-      .createHash('sha256')
-      .update(token)
-      .digest('hex');
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // 2. Find user by hashed token and check expiration
     const user = await User.findOne({
@@ -194,7 +209,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
+      return res.status(400).json({ message: "Invalid or expired token" });
     }
 
     // 3. Set new password
@@ -203,8 +218,8 @@ export const resetPassword = async (req: Request, res: Response) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Password reset successful' });
+    res.status(200).json({ message: "Password reset successful" });
   } catch (error: any) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

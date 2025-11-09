@@ -18,11 +18,11 @@ export class ApiError extends Error {
     this.success = false;
     
     // Capture stack trace
-    if (stack) {
-      this.stack = stack;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
-    }
+    // if (stack) {
+    //   this.stack = stack;
+    // } else {
+    //   Error.captureStackTrace(this, this.constructor);
+    // }
   }
 }
 

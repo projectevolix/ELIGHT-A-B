@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import * as authController from '../controllers/auth.controller';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.get('/google/callback',
 );
 
 // --- Refresh & Logout ---
-router.post('/refresh-token', authController.refresh);
+router.post('/refresh-token' , authController.refresh);
 router.post('/logout', authController.logout);
 
 // Password Reset

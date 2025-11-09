@@ -44,7 +44,7 @@ export const errorHandler = (
     statusCode,
     message,
     errors,
-    stack: NODE_ENV === 'development' ? stack : undefined,
+    // stack: NODE_ENV === 'development' ? stack : undefined,
   };
 
   res.status(statusCode).json(errorResponse);
