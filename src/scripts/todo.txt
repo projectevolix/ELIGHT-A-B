@@ -1,0 +1,57 @@
+i want to create node js script to upload my env file to my google drive 
+i create google drive app script for this as a upload and download file api 
+
+google drive app script i buid alredy done 
+
+in the script create variable for api script link 
+
+const API_URL = "";
+
+upload env : POST , endpoint API_URL 
+body {
+    file : "file_data"
+    name : "web-env-learvia"
+    password : "7584"
+}
+
+download env :  , endpoint API_URL 
+body {
+    name : "web-env-learvia"
+    password : "7584"
+}
+
+
+now node js script flow be like this 
+
+## env upload process
+
+01. dev set what .env file he want to upload as a array 
+
+[{
+    name :learnvia-admin-env
+    path : D:\learnvia\admin\.env
+},
+{
+    name :learnvia-backend-env
+    path : D:\learnvia\backend\.env
+},
+{
+    name : learnvia-web-env
+    path : D:\learnvia\web\.env
+}]
+
+02.first validate the path and file is in their 
+03.then upload file one by one ( ask password and validate)
+04.if all upload success then show success msg on console 
+
+## download process
+01.array has name and path to file download 
+02.ask credentiols to validate 
+03.if success then download 
+04.when download is success then show success msg
+
+ui guide line 
+01. this is terminal application
+02. use emuji to ux better 
+03. application has two modes ( upload and download | UP and GET) -> user want to chose
+04. application two process password protection 
