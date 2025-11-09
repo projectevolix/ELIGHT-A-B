@@ -1,0 +1,313 @@
+{
+	"info": {
+		"_postman_id": "4ff55786-e5e3-4500-abb5-c125fdb41d11",
+		"name": "Aurvedic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40109554",
+		"_collection_link": "https://vidura-0899.postman.co/workspace/Elight~4eb7be75-f82d-4da2-9937-049934cd53de/collection/40109554-4ff55786-e5e3-4500-abb5-c125fdb41d11?action=share&source=collection_link&creator=40109554"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"vidura@gmail.com\",\r\n  \"password\": \"vidura\",\r\n  \"f_name\": \"Vidura\",\r\n  \"l_name\": \"Priyadarshana\",\r\n  \"phoneNumber\": \"+1-555-123-4567\",\r\n  \"address\": \"123 Main St, Anytown, USA 12345\",\r\n  \"id_card_number\": \"A12345678\",\r\n  \"birthday\": \"1990-05-15T00:00:00.000Z\",\r\n  \"description\": \"Patient with a history of allergies.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"vidura\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh-token-test",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGYzYWE1ZGU1NTFhNDk5NTg2MjUzYyIsInJvbGVzIjpbImFkbWluIiwidXNlciJdLCJpYXQiOjE3NjI2MDU3NTQsImV4cCI6MTc2MjYwNjY1NH0.ZvyBpd7u6Fw-5Dk4aUVlS8aJOp7UYICsc0g5GTy88lA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Treatment",
+			"item": [
+				{
+					"name": "Create Treatment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/treatment",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"treatment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "Create Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGVjZTVjNDkyYmZjZWE0ZDAyZjA2YyIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNjAwNDE1LCJleHAiOjE3NjI2MDEzMTV9.MbYc5y7U_EUH2mdoj-HpXcPp4NAHO9doNmeyI7OzH8k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"checkInDate\": \"2025-12-20T14:00:00Z\",\r\n    \"checkOutDate\": \"2025-12-25T11:00:00Z\",\r\n    \"description\": \"Requesting a room with a view, if possible. Celebrating an anniversary.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGVjZTVjNDkyYmZjZWE0ZDAyZjA2YyIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNjAzNzY0LCJleHAiOjE3NjI2MDQ2NjR9.QzIdjRJSdJ0e2VoTMb_HSonkUzQBE8spzAQo7g57mi4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/:bookingId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "690f2801771a3a616ed8a36e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Routes",
+			"item": [
+				{
+					"name": "Create Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGYzODY3NjAxZGVhNTZmY2NiZWZhYiIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNjA1NzEwLCJleHAiOjE3NjI2MDY2MTB9.PbfJdG1zmF3d1a6Up89iv_dMIQGg-nXMr7Sm9EJpreU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"vidura\",\r\n  \"f_name\": \"vidura\",\r\n  \"l_name\": \"priyadarhsana\",\r\n  \"id_card_number\": \"123456789V\",\r\n  \"phoneNumber\": \"+1555123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}
