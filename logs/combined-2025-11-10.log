@@ -70,3 +70,8 @@ TypeError: Cannot destructure property 'status' of 'req.body' as it is undefined
 [2025-11-10 14:41:13:4113] [32minfo[39m: [32mMongoDB connected successfully.[39m
 [2025-11-10 15:00:14:014] [32minfo[39m: [32mMongoDB connected successfully.[39m
 [2025-11-10 15:09:27:927] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-10 15:20:33:2033] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-10 15:22:57:2257] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-10 15:23:17:2317] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-10 15:24:36:2436] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-10 15:24:51:2451] [32minfo[39m: [32mMongoDB connected successfully.[39m

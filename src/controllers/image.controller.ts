@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../utils/ApiError";
-import * as imageService from "../services/image.service"
 import { ApiResponse } from "../utils/ApiResponse";
+import { uploadToCloudinary } from "../config/cloudinary.config";
 
 export const saveImageAndGetUrl = async (
   req: Request,
@@ -15,7 +15,7 @@ export const saveImageAndGetUrl = async (
     }
 
     // 2. Pass the file to the service
-    const imageUrl = await imageService.saveImageAndGetUrl(req.file);
+    const imageUrl = await uploadToCloudinary(req.file);
 
     // 3. Send the successful response
     res.status(201).json(
