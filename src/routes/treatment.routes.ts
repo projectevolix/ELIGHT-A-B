@@ -9,7 +9,7 @@ router.use(authenticate)
 
 router.get(
     '/',
-    authorize([]),
+    authorize([ROLES.Admin]),
     treatmentController.getAllTreatments
 );
 
@@ -24,5 +24,12 @@ router.put(
     authorize([ROLES.Admin]),
     treatmentController.updateTreatment
 );
+
+router.delete(
+    '/:id/delete',
+    authorize([ROLES.Admin]),
+    treatmentController.deleteTreatment
+);
+
 
 export default router;

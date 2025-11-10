@@ -1,6 +1,12 @@
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { Threatment } from "../models/treatment.model";
-import { CreateTreatmentInput, IThreatment, UpdateTreatmentData } from "../types/treatment.types";
+import {
+  CreateTreatmentInput,
+  IPaginatedTreatments,
+  IQueryOptions,
+  IThreatment,
+  UpdateTreatmentData,
+} from "../types/treatment.types";
 import { BadRequestError } from "../utils/ApiError";
 
 export const createTreatment = async (
@@ -41,4 +47,56 @@ export const updateTreatment = async (
   // 3. Return the updated document or null
   return updatedTreatment;
 };
-    
+
+export const deleteTreatment = async (
+  id: string
+): Promise<IThreatment | null> => {
+  // 1. Validate the ID format
+  if (!Types.ObjectId.isValid(id)) {
+    return null;
+  }
+
+  // 2. Find and delete the document
+  const deletedTreatment = await Threatment.findByIdAndDelete(id);
+
+  // 3. Return the deleted document (or null if not found)
+  return deletedTreatment;
+};
+
+export const getAllTreatments = async (
+  options: IQueryOptions
+): Promise<IPaginatedTreatments> => {
+  // 1. Set pagination defaults
+  const page = options.page || 1;
+  const limit = options.limit || 10;
+  const skip = (page - 1) * limit;
+
+  // 2. Create an empty filter (to get all)
+  const filter: FilterQuery<IThreatment> = {};
+
+  // 3. Run queries in parallel for efficiency
+  const [treatments, totalDocs] = await Promise.all([
+    // Query 1: Get the documents for the current page
+    Threatment.find(filter)
+      .sort({ createdAt: -1 }) // Sort by newest first
+      .skip(skip)
+      .limit(limit),
+
+    // Query 2: Get the total count of all documents
+    Threatment.countDocuments(filter),
+  ]);
+
+  // 4. Calculate total pages
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  // 5. Return the paginated response
+  return {
+    data: treatments,
+    meta: {
+      page,
+      limit,
+      totalDocs,
+      totalPages,
+    },
+  };
+};

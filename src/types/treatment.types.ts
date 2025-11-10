@@ -19,3 +19,18 @@ export type CreateTreatmentInput = {
 };
 
 export type UpdateTreatmentData = Partial<IThreatment>;
+
+export interface IQueryOptions {
+  page?: number;
+  limit?: number;
+}
+
+export interface IPaginatedTreatments {
+  data: IThreatment[];
+  meta: {
+    page: number;
+    limit: number;
+    totalDocs: number;
+    totalPages: number;
+  };
+}
