@@ -98,4 +98,24 @@ export const updateBookingStatus = async (
   // 3. Return the updated booking (or null if not found)
   return updatedBooking;
 };
-  
+
+export const updateBookingDetails = async (
+  bookingId: string,
+  updateData: Partial<IBooking>
+): Promise<IBooking | null> => {
+  // 1. Validate the ID format
+  if (!Types.ObjectId.isValid(bookingId)) {
+    return null; // Return null if ID is invalid
+  }
+
+  // 2. Find the booking and update it
+  // { new: true } tells Mongoose to return the *updated* document
+  const updatedBooking = await Booking.findByIdAndUpdate(
+    bookingId,
+    { $set: updateData }, // Use $set to apply partial updates safely
+    { new: true }
+  ).populate("userId", "f_name l_name email"); // Populate user details
+
+  // 3. Return the updated document (or null if not found)
+  return updatedBooking;
+};

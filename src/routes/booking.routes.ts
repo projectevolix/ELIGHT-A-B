@@ -19,6 +19,12 @@ router.put(
     bookingController.updateBookingStatus
 );
 
+router.put(
+    '/:bookingId/details',
+    authorize([ROLES.User, ROLES.Admin]),
+    bookingController.updateBookingDetails
+);
+
 router.post(
     '/create',
     authorize([ROLES.User]),

@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 import { logger } from "../config/logger.config";
 import { BadRequestError, NotFoundError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
+import { IBooking } from "../types/booking.types";
 
 export const createBooking = async (
   req: Request,
@@ -107,7 +108,10 @@ export const updateBookingStatus = async (
       throw new BadRequestError("Status is required");
     }
 
-    const updatedBooking = await bookingService.updateBookingStatus(bookingId, status);
+    const updatedBooking = await bookingService.updateBookingStatus(
+      bookingId,
+      status
+    );
 
     if (!updatedBooking) {
       throw new NotFoundError("Booking not found");
@@ -118,10 +122,57 @@ export const updateBookingStatus = async (
     //   data: updatedBooking
     // });
 
-    res.status(200).json(new ApiResponse(200, updatedBooking, "Status updated"));
-
+    res
+      .status(200)
+      .json(new ApiResponse(200, updatedBooking, "Status updated"));
   } catch (error) {
     logger.error("Error updating booking status:", error);
-    next(error); 
+    next(error);
+  }
+};
+
+export const updateBookingDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { bookingId } = req.params;
+    const { checkInDate, checkOutDate, description } = req.body;
+
+    // Create the update object
+    const updateData: Partial<IBooking> = {};
+    if (checkInDate) updateData.checkInDate = checkInDate;
+    if (checkOutDate) updateData.checkOutDate = checkOutDate;
+    if (description !== undefined) updateData.description = description;
+
+    // Check if any valid data was sent
+    if (Object.keys(updateData).length === 0) {
+      throw new BadRequestError("No valid fields provided for update.");
+    }
+
+    // Call the service
+    const updatedBooking = await bookingService.updateBookingDetails(
+      bookingId,
+      updateData
+    );
+
+    // Handle if booking was not found
+    if (!updatedBooking) {
+      throw new NotFoundError("Booking not found");
+    }
+
+    // --- USE ApiResponse CLASS FOR SUCCESS ---
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        updatedBooking,
+        "Booking details updated successfully"
+      )
+    );
+    
+  } catch (error) {
+    logger.error("Error updating booking details:", error);
+    next(error);
   }
 };
