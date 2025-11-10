@@ -17,3 +17,5 @@ export type CreateTreatmentInput = {
   benifits: string[]; // Matches your interface spelling
   imgUrl?: string;
 };
+
+export type UpdateTreatmentData = Partial<IThreatment>;

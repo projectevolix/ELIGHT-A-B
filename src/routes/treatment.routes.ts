@@ -19,4 +19,10 @@ router.post(
     treatmentController.createTreatment
 );
 
+router.put(
+    '/:id/edit',
+    authorize([ROLES.Admin]),
+    treatmentController.updateTreatment
+);
+
 export default router;

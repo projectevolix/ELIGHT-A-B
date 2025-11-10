@@ -1,0 +1,522 @@
+{
+	"info": {
+		"_postman_id": "4ff55786-e5e3-4500-abb5-c125fdb41d11",
+		"name": "Aurvedic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40109554",
+		"_collection_link": "https://vidura-0899.postman.co/workspace/Elight~4eb7be75-f82d-4da2-9937-049934cd53de/collection/40109554-4ff55786-e5e3-4500-abb5-c125fdb41d11?action=share&source=collection_link&creator=40109554"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"vidura@example.com\",\r\n  \"password\": \"vidura\",\r\n  \"f_name\": \"Santha\",\r\n  \"l_name\": \"Priyadarshana\",\r\n  \"phoneNumber\": \"+1-555-123-4567\",\r\n  \"address\": \"123 Main St, Anytown, USA 12345\",\r\n  \"id_card_number\": \"A12345678\",\r\n  \"birthday\": \"1990-05-15T00:00:00.000Z\",\r\n  \"description\": \"Patient with a history of allergies.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"viduraa@example.com\",\r\n  \"password\": \"vidura\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh-token-test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGYzODY3NjAxZGVhNTZmY2NiZWZhYiIsImlhdCI6MTc2MjY3NzczMCwiZXhwIjoxNzYzMjgyNTMwfQ.KDc6_Tr21k4RTFOU21yUJ5dsNtYJCCB-POzDt7jh-v8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MTBjYmYxMDJkYmI3YTk1MTZlZGE0NSIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNzY3NzQ2LCJleHAiOjE3NjI3Njg2NDZ9.CyEy5Hn9T6lrCzmqVCMr1Sw-NYka-lEEsfNZiDPnr8o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Treatment",
+			"item": [
+				{
+					"name": "Create Treatment (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MTBjYmYxMDJkYmI3YTk1MTZlZGE0NSIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNzY3NzQ2LCJleHAiOjE3NjI3Njg2NDZ9.CyEy5Hn9T6lrCzmqVCMr1Sw-NYka-lEEsfNZiDPnr8o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Session\",\r\n  \"description\": \"A relaxing session using essential oils to promote healing and well-being.\",\r\n  \"duration\": 60,\r\n  \"resources\": [\"Essential oils (lavender, peppermint)\", \"Diffuser\", \"Relaxing music\"],\r\n  \"benifits\": [\"Reduces stress\", \"Improves mood\", \"Boosts relaxation\"],\r\n  \"imgUrl\": \"https://example.com/images/aroma.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/treatments/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"treatments",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Treatment (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MTBkOTcxZjQ2YjEyMzY3OGNlZTg0OCIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTc2Mjc3MDEwMywiZXhwIjoxNzYyNzcxMDAzfQ.PtFMiDPn2pUMFM1Bn44fzLXEg0Fc372jBEN2VzXnzD0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Updated Aromatherapy\",\r\n  \"description\": \"An even more relaxing session.\",\r\n  \"duration\": 75,\r\n  \"resources\": [\"Essential oils (lavender, rose)\", \"Heated towels\", \"Diffuser\"],\r\n  \"benifits\": [\"Reduces stress\", \"Improves sleep\", \"Deep relaxation\"],\r\n  \"imgUrl\": \"https://example.com/images/aroma-updated.jpg\"\r\n}\r\n\r\n// Updating Only a Few Fields\r\n\r\n// {\r\n//   \"name\": \"Updated Aromatherapy\",\r\n//   \"duration\": 75\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/treatments/6911b378cc058cc63e4f708f/edit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"treatments",
+								"6911b378cc058cc63e4f708f",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "Create Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGYzODY3NjAxZGVhNTZmY2NiZWZhYiIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNzQ3NzQzLCJleHAiOjE3NjI3NDg2NDN9.bR5H_WpQcK5WzpRuOI5UHQnmlKdG6wtRilWEApaa4u0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"checkInDate\": \"2025-12-20T14:00:00Z\",\r\n    \"checkOutDate\": \"2025-12-25T11:00:00Z\",\r\n    \"description\": \"Requesting a room with a view, if possible. Celebrating an anniversary.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGVjZTVjNDkyYmZjZWE0ZDAyZjA2YyIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNjAzNzY0LCJleHAiOjE3NjI2MDQ2NjR9.QzIdjRJSdJ0e2VoTMb_HSonkUzQBE8spzAQo7g57mi4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/:bookingId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "690f2801771a3a616ed8a36e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Bookings (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MTBkOTcxZjQ2YjEyMzY3OGNlZTg0OCIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTc2Mjc1NDUzMSwiZXhwIjoxNzYyNzU1NDMxfQ.9rPYhTQyt16t1QizIkiUfdl_g2hk2lgEDNyIons7USo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/get-all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking Status (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MTBkOTcxZjQ2YjEyMzY3OGNlZTg0OCIsInJvbGVzIjpbImFkbWluIl0sImlhdCI6MTc2Mjc0ODk1OCwiZXhwIjoxNzYyNzQ5ODU4fQ.gMWqDKS63uVZv9_iAxToXMI4p2ka13VM28mZbnPZAFE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"rejected\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings/691165684ce10a537ae1d8b9/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"691165684ce10a537ae1d8b9",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking Details (Admin / User)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGYzODY3NjAxZGVhNTZmY2NiZWZhYiIsInJvbGVzIjpbInVzZXIiXSwiaWF0IjoxNzYyNzU0NjQ2LCJleHAiOjE3NjI3NTU1NDZ9.Y0fXPodB-yZV2SMg94l7Dr1yUM1BgXYu25eCOb6CsC0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"checkInDate\": \"2026-01-15T14:00:00Z\",\r\n  \"checkOutDate\": \"2026-01-20T11:00:00Z\",\r\n  \"description\": \"Updated description: Please add an extra towel.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bookings/6910c4b53a9d699b21450b9e/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"6910c4b53a9d699b21450b9e",
+								"details"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Routes",
+			"item": [
+				{
+					"name": "Create Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGYzYWE1ZGU1NTFhNDk5NTg2MjUzYyIsInJvbGVzIjpbImFkbWluIiwidXNlciJdLCJpYXQiOjE3NjI3MTE4MjIsImV4cCI6MTc2MjcxMjcyMn0.YSHtWx9hLYBPqPIoHb-fEThK1nFUQbXHjPOA6w7OLf8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"viduraa@example.com\",\r\n  \"password\": \"vidura\",\r\n  \"f_name\": \"vidura\",\r\n  \"l_name\": \"priyadarhsana\",\r\n  \"id_card_number\": \"123456789V\",\r\n  \"phoneNumber\": \"+1555123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Image Upload",
+			"item": [
+				{
+					"name": "Image Upload and Get Image Url",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // Form Data\r\n    // body: formdata\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/uploads/image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"uploads",
+								"image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}
