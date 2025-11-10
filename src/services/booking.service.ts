@@ -1,12 +1,16 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { Booking } from "../models/booking.model";
-import { CreateBookingInput, IBooking, IPaginatedBookings, IQueryOptions } from "../types/booking.types";
+import {
+  CreateBookingInput,
+  IBooking,
+  IPaginatedBookings,
+  IQueryOptions,
+} from "../types/booking.types";
 import { User } from "../models/user.model";
 
 export const getAllBookings = async (
   options: IQueryOptions
 ): Promise<IPaginatedBookings> => {
-  
   // --- 1. Set Defaults & Pagination ---
   const page = options.page || 1;
   const limit = options.limit || 10;
@@ -17,16 +21,16 @@ export const getAllBookings = async (
 
   // --- 3. Handle Search (f_name, l_name) ---
   if (options.search) {
-    const searchRegex = new RegExp(options.search, "i"); 
-    
+    const searchRegex = new RegExp(options.search, "i");
+
     // Find users who match the search
     const matchingUsers = await User.find({
       $or: [{ f_name: searchRegex }, { l_name: searchRegex }],
     }).select("_id"); // We only need their IDs
 
     // Get an array of just the IDs
-    const userIds = matchingUsers.map(user => user._id);
-    
+    const userIds = matchingUsers.map((user) => user._id);
+
     // Filter bookings where the 'userId' is in our list of matched users
     bookingFilter.userId = { $in: userIds };
   }
@@ -39,7 +43,7 @@ export const getAllBookings = async (
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit),
-      
+
     // Query 2: Get the total document count matching the filter
     Booking.countDocuments(bookingFilter),
   ]);
@@ -49,7 +53,7 @@ export const getAllBookings = async (
 
   // --- 6. Format and Return Response ---
   return {
-    data: bookings, 
+    data: bookings,
     meta: {
       page,
       limit,

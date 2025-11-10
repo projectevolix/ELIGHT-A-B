@@ -1,0 +1,10 @@
+[2025-11-09 23:40:30:4030] [31merror[39m: [31mError creating admin user: An account with this email already exists.[39m
+Error: An account with this email already exists.
+    at Object.createAdmin (D:\Elight Group\Git Lab\backend\src\services\admin.service.ts:10:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async createAdminUser (D:\Elight Group\Git Lab\backend\src\controllers\admin.controller.ts:33:22)
+[2025-11-09 23:40:30:4030] [31merror[39m: [31mUNHANDLED ERROR: An account with this email already exists.[39m
+Error: An account with this email already exists.
+    at Object.createAdmin (D:\Elight Group\Git Lab\backend\src\services\admin.service.ts:10:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async createAdminUser (D:\Elight Group\Git Lab\backend\src\controllers\admin.controller.ts:33:22)

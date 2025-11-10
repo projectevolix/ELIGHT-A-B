@@ -28,3 +28,50 @@
 [2025-11-09 22:52:53:5253] [32minfo[39m: [32mMongoDB connected successfully.[39m
 [2025-11-09 22:59:01:591] [32minfo[39m: [32mMongoDB connected successfully.[39m
 [2025-11-09 22:59:50:5950] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:00:38:038] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:02:19:219] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:06:11:611] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:07:51:751] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:09:17:917] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:10:31:1031] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:11:39:1139] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:12:55:1255] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:13:38:1338] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:13:56:1356] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:15:35:1535] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:17:09:179] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:19:33:1933] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:20:28:2028] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:20:56:2056] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:21:15:2115] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:22:32:2232] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:25:16:2516] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:26:42:2642] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:33:03:333] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:34:14:3414] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:35:13:3513] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:35:47:3547] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:36:51:3651] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:37:21:3721] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:37:36:3736] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:38:09:389] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:40:09:409] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:40:30:4030] [31merror[39m: [31mError creating admin user: An account with this email already exists.[39m
+Error: An account with this email already exists.
+    at Object.createAdmin (D:\Elight Group\Git Lab\backend\src\services\admin.service.ts:10:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async createAdminUser (D:\Elight Group\Git Lab\backend\src\controllers\admin.controller.ts:33:22)
+[2025-11-09 23:40:30:4030] [31merror[39m: [31mUNHANDLED ERROR: An account with this email already exists.[39m
+Error: An account with this email already exists.
+    at Object.createAdmin (D:\Elight Group\Git Lab\backend\src\services\admin.service.ts:10:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async createAdminUser (D:\Elight Group\Git Lab\backend\src\controllers\admin.controller.ts:33:22)
+[2025-11-09 23:41:28:4128] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:41:54:4154] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:44:06:446] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:45:17:4517] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:45:41:4541] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:45:57:4557] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:49:25:4925] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:51:53:5153] [32minfo[39m: [32mMongoDB connected successfully.[39m
+[2025-11-09 23:53:58:5358] [32minfo[39m: [32mMongoDB connected successfully.[39m

@@ -7,16 +7,16 @@ const router = Router();
 
 router.use(authenticate)
 
-router.post(
-    '/create',
-    authorize([ROLES.User]),
-    bookingController.createBooking
-);
-
 router.get(
     '/get-all',
     authorize([ROLES.Admin]),
     bookingController.getAllBookings
+);
+
+router.post(
+    '/create',
+    authorize([ROLES.User]),
+    bookingController.createBooking
 );
 
 router.delete(

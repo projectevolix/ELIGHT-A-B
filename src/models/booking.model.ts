@@ -1,5 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
 import { IBooking } from "../types/booking.types";
+import { BOOKING_STATUS_LIST, BookingStatus } from "../constants/booking.constants";
 
 const bookingSchema = new Schema<IBooking>({
     userId: {
@@ -22,6 +23,11 @@ const bookingSchema = new Schema<IBooking>({
     is_active: {
         type: Boolean,
         default: true
+    },
+    status: {
+        type: String,
+        enum: BOOKING_STATUS_LIST,
+        default: BookingStatus.Pending
     }
 }, { timestamps: true });
 

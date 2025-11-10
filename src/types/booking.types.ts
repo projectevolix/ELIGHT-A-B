@@ -1,6 +1,6 @@
 import { Document, Types } from "mongoose";
 import { IUser } from "../models/user.model";
-import { UserRole } from "../constants/roles.constants";
+import { BookingStatus } from "../constants/booking.constants";
 
 export interface IBooking extends Document { 
     _id: Types.ObjectId;
@@ -9,6 +9,7 @@ export interface IBooking extends Document {
     checkOutDate: Date;
     description?: string;
     is_active: boolean;
+    status: BookingStatus;
 }
 
 export type CreateBookingInput = {
