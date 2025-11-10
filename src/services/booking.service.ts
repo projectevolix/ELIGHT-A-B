@@ -7,6 +7,7 @@ import {
   IQueryOptions,
 } from "../types/booking.types";
 import { User } from "../models/user.model";
+import { BookingStatus } from "../constants/booking.constants";
 
 export const getAllBookings = async (
   options: IQueryOptions
@@ -76,3 +77,25 @@ export const createBooking = async (
 export const deleteBooking = async (bookingId: string): Promise<void> => {
   await Booking.findByIdAndDelete(bookingId);
 };
+
+export const updateBookingStatus = async (
+  bookingId: string,
+  newStatus: BookingStatus
+): Promise<IBooking | null> => {
+  // 1. Validate the ID format
+  if (!Types.ObjectId.isValid(bookingId)) {
+    return null; // Or throw an error
+  }
+
+  // 2. Find the booking by ID and update its status
+  // { new: true } ensures the function returns the *updated* document
+  const updatedBooking = await Booking.findByIdAndUpdate(
+    bookingId,
+    { status: newStatus },
+    { new: true }
+  ).populate("userId", "f_name l_name email"); // Populate user details
+
+  // 3. Return the updated booking (or null if not found)
+  return updatedBooking;
+};
+  

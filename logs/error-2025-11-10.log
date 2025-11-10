@@ -1,0 +1,12 @@
+[2025-11-10 09:59:32:5932] [31merror[39m: [31mUNHANDLED ERROR: Cannot destructure property 'status' of 'req.body' as it is undefined.[39m
+TypeError: Cannot destructure property 'status' of 'req.body' as it is undefined.
+    at updateBookingStatus (D:\Elight Group\Git Lab\backend\src\controllers\booking.controller.ts:104:13)
+    at Layer.handleRequest (D:\Elight Group\Git Lab\backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\Elight Group\Git Lab\backend\node_modules\router\lib\route.js:157:13)
+    at D:\Elight Group\Git Lab\backend\src\middleware\auth.middleware.ts:46:5
+    at Layer.handleRequest (D:\Elight Group\Git Lab\backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\Elight Group\Git Lab\backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\Elight Group\Git Lab\backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\Elight Group\Git Lab\backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\Elight Group\Git Lab\backend\node_modules\router\lib\layer.js:152:17)
+    at D:\Elight Group\Git Lab\backend\node_modules\router\index.js:295:15

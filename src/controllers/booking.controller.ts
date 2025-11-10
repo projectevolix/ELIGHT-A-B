@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import * as bookingService from "../services/booking.service";
 import { Types } from "mongoose";
 import { logger } from "../config/logger.config";
+import { BadRequestError, NotFoundError } from "../utils/ApiError";
+import { ApiResponse } from "../utils/ApiResponse";
 
 export const createBooking = async (
   req: Request,
@@ -42,7 +44,7 @@ export const createBooking = async (
   }
 };
 
-export const getAllBookings = async(
+export const getAllBookings = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -51,7 +53,7 @@ export const getAllBookings = async(
     // --- 1. Parse Query Parameters ---
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
-    const search = req.query.search as string || "";
+    const search = (req.query.search as string) || "";
 
     // --- 2. Call Service with Options ---
     const result = await bookingService.getAllBookings({
@@ -66,11 +68,10 @@ export const getAllBookings = async(
       success: true,
       message: "Bookings retrieved successfully",
       data: result.data,
-      meta: result.meta, 
+      meta: result.meta,
     });
-
   } catch (error) {
-    next(error); 
+    next(error);
   }
 };
 
@@ -90,5 +91,37 @@ export const deleteBooking = async (
   } catch (error) {
     logger.error("Error deleting booking:", error);
     next(error);
+  }
+};
+
+export const updateBookingStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { bookingId } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      throw new BadRequestError("Status is required");
+    }
+
+    const updatedBooking = await bookingService.updateBookingStatus(bookingId, status);
+
+    if (!updatedBooking) {
+      throw new NotFoundError("Booking not found");
+    }
+
+    // res.status(200).json({
+    //   message: "Status updated",
+    //   data: updatedBooking
+    // });
+
+    res.status(200).json(new ApiResponse(200, updatedBooking, "Status updated"));
+
+  } catch (error) {
+    logger.error("Error updating booking status:", error);
+    next(error); 
   }
 };

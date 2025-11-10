@@ -13,6 +13,12 @@ router.get(
     bookingController.getAllBookings
 );
 
+router.put(
+    '/:bookingId/status',
+    authorize([ROLES.Admin]),
+    bookingController.updateBookingStatus
+);
+
 router.post(
     '/create',
     authorize([ROLES.User]),
