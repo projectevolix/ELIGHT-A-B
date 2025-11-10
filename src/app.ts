@@ -13,6 +13,7 @@ import morgan from 'morgan';
 import treatmentRouter from './routes/treatment.routes';
 import bookingRouter from './routes/booking.routes';
 import adminRouter from './routes/admin.routes';
+import imageRouter from './routes/image.routes';
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/treatments', treatmentRouter); 
 app.use('/api/bookings', bookingRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/uploads', imageRouter);
 
 app.use(errorHandler);
 
