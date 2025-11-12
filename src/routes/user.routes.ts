@@ -14,4 +14,16 @@ router.get(
   userController.getProfile
 );
 
+router.get(
+  '/employees', 
+  authorize([ROLES.Admin]), 
+  userController.getAllEmployees
+);
+
+router.get(
+  '/',
+  authorize([ROLES.Admin]),
+  userController.getAllUsers
+);
+
 export default router;
