@@ -16,6 +16,7 @@ import adminRouter from './routes/admin.routes';
 import imageRouter from './routes/image.routes';
 import therapistRouter from './routes/therapist.routes';
 import doctorRouter from './routes/doctor.routes';
+import cabinRouter from './routes/cabin.routes';
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use('/api/admin', adminRouter);
 app.use('/api/uploads', imageRouter);
 app.use('/api/therapists', therapistRouter);
 app.use('/api/doctors', doctorRouter);
+app.use('/api/cabins', cabinRouter);
 
 app.use(errorHandler);
 
