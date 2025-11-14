@@ -5,7 +5,6 @@ import { authenticate, authorize } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// This 'authenticate' middleware applies to ALL routes defined in this file
 router.use(authenticate);
 
 router.get(
@@ -24,6 +23,12 @@ router.get(
   '/',
   authorize([ROLES.Admin]),
   userController.getAllUsers
+);
+
+router.delete(
+  '/:userId/delete',
+  authorize([ROLES.Admin]),
+  userController.deleteUser
 );
 
 export default router;

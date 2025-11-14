@@ -77,3 +77,19 @@ export const getAllUsers = async (
     meta: { page, limit, totalDocs, totalPages },
   };
 };
+
+export const deleteUser = async (userId: string): Promise<IUser | null> => { 
+  // 1. Validate the ID format
+  
+
+  // 2. Find the user and update the is_active field
+  // { new: true } returns the modified document, not the original
+  const deactivatedUser = await User.findByIdAndUpdate(
+    userId,
+    { is_active: false }, // The update
+    { new: true }
+  );
+  
+  // 3. Return the updated user (or null if not found)
+  return deactivatedUser;
+}
