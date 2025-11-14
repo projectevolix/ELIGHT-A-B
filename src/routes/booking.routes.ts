@@ -32,7 +32,7 @@ router.post(
 );
 
 router.delete(
-    '/:bookingId',
+    '/:bookingId/delete',
     authorize([ROLES.User,ROLES.Admin]),
     bookingController.deleteBooking
 );
