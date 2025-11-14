@@ -85,10 +85,10 @@ export const deleteBooking = async (
     const { bookingId } = req.params;
 
     if (!Types.ObjectId.isValid(bookingId)) {
-      return res.status(400).json({ message: "Invalid booking ID" });
+      throw new NotFoundError("Booking not found");
     }
     await bookingService.deleteBooking(bookingId);
-    res.status(200).json({ message: "Booking deleted successfully" });
+    res.status(200).json(new ApiResponse(200, null, "Booking deleted successfully"));
   } catch (error) {
     logger.error("Error deleting booking:", error);
     next(error);
@@ -182,7 +182,7 @@ const getAuthAndPagination = (req: Request) => {
   if (!req.user) {
     throw new UnauthorizedError("Not authorized. Please log in.");
   }
-  const userId = req.user._id.toString(); // Get user ID from token
+  const userId = req.user.id.toString(); // Get user ID from token
 
   // Parse pagination
   const page = parseInt(req.query.page as string, 10) || 1;
@@ -191,9 +191,6 @@ const getAuthAndPagination = (req: Request) => {
   return { userId, options: { page, limit } };
 };
 
-/**
- * Get all (paginated) bookings for the logged-in user.
- */
 export const getMyBookings = async (
   req: Request,
   res: Response,
@@ -206,54 +203,6 @@ export const getMyBookings = async (
     res
       .status(200)
       .json(new ApiResponse(200, result, "Bookings retrieved successfully"));
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * Get today's (paginated) bookings for the logged-in user.
- */
-export const getTodayBookings = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { userId, options } = getAuthAndPagination(req);
-    const result = await bookingService.getTodayBookings(userId, options);
-
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, result, "Today's bookings retrieved successfully")
-      );
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * Get tomorrow's (paginated) bookings for the logged-in user.
- */
-export const getTommorrowBookings = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { userId, options } = getAuthAndPagination(req);
-    const result = await bookingService.getTommorrowBookings(userId, options);
-
-    res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          result,
-          "Tomorrow's bookings retrieved successfully"
-        )
-      );
   } catch (error) {
     next(error);
   }

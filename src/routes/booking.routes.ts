@@ -43,16 +43,4 @@ router.get(
     bookingController.getMyBookings
 );
 
-router.get(
-    '/today',
-    authorize([ROLES.User]),
-    bookingController.getTodayBookings
-);
-
-router.get(
-    '/tommorrow',
-    authorize([ROLES.User]),
-    bookingController.getTommorrowBookings
-);
-
 export default router;

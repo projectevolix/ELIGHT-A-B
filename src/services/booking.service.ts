@@ -8,6 +8,7 @@ import {
 } from "../types/booking.types";
 import { User } from "../models/user.model";
 import { BookingStatus } from "../constants/booking.constants";
+import { NotFoundError } from "../utils/ApiError";
 
 export const getAllBookings = async (
   options: IQueryOptions
@@ -74,28 +75,32 @@ export const createBooking = async (
   return newBooking;
 };
 
-export const deleteBooking = async (bookingId: string): Promise<void> => {
-  await Booking.findByIdAndDelete(bookingId);
+export const deleteBooking = async (
+  bookingId: string
+): Promise<IBooking | null> => {
+  // Validate the ID
+  if (!Types.ObjectId.isValid(bookingId)) {
+    return null;
+  }
+
+  const deletedBooking = await Booking.findByIdAndUpdate(
+    bookingId,
+    { is_active: false }, 
+    { new: true } 
+  );
+
+  return deletedBooking;
 };
 
 export const updateBookingStatus = async (
   bookingId: string,
   newStatus: BookingStatus
 ): Promise<IBooking | null> => {
-  // 1. Validate the ID format
-  if (!Types.ObjectId.isValid(bookingId)) {
-    return null; // Or throw an error
-  }
-
-  // 2. Find the booking by ID and update its status
-  // { new: true } ensures the function returns the *updated* document
   const updatedBooking = await Booking.findByIdAndUpdate(
     bookingId,
     { status: newStatus },
     { new: true }
-  ).populate("userId", "f_name l_name email"); // Populate user details
-
-  // 3. Return the updated booking (or null if not found)
+  ).populate("userId", "f_name l_name email");
   return updatedBooking;
 };
 
@@ -154,65 +159,10 @@ const getPaginatedBookings = async (
   };
 };
 
-/**
- * Get all paginated bookings for a specific user.
- */
 export const getMyBookings = async (
   userId: string,
   options: IQueryOptions
 ): Promise<IPaginatedBookings> => {
   const filter = { userId: new Types.ObjectId(userId) };
-  return getPaginatedBookings(filter, options);
-};
-
-/**
- * Get paginated bookings for a user with a check-in date of today.
- */
-export const getTodayBookings = async (
-  userId: string,
-  options: IQueryOptions
-): Promise<IPaginatedBookings> => {
-  // Set start of today
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  // Set end of today
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
-
-  const filter = {
-    userId: new Types.ObjectId(userId),
-    checkInDate: {
-      $gte: todayStart,
-      $lte: todayEnd,
-    },
-  };
-  return getPaginatedBookings(filter, options);
-};
-
-/**
- * Get paginated bookings for a user with a check-in date of tomorrow.
- */
-export const getTommorrowBookings = async (
-  userId: string,
-  options: IQueryOptions
-): Promise<IPaginatedBookings> => {
-  // Set start of tomorrow
-  const tomorrowStart = new Date();
-  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
-  tomorrowStart.setHours(0, 0, 0, 0);
-
-  // Set end of tomorrow
-  const tomorrowEnd = new Date();
-  tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
-  tomorrowEnd.setHours(23, 59, 59, 999);
-
-  const filter = {
-    userId: new Types.ObjectId(userId),
-    checkInDate: {
-      $gte: tomorrowStart,
-      $lte: tomorrowEnd,
-    },
-  };
   return getPaginatedBookings(filter, options);
 };
