@@ -119,3 +119,100 @@ export const updateBookingDetails = async (
   // 3. Return the updated document (or null if not found)
   return updatedBooking;
 };
+
+const getPaginatedBookings = async (
+  filter: FilterQuery<IBooking>,
+  options: IQueryOptions
+): Promise<IPaginatedBookings> => {
+  // 1. Set pagination defaults
+  const page = options.page || 1;
+  const limit = options.limit || 10;
+  const skip = (page - 1) * limit;
+
+  // 2. Run queries in parallel
+  const [bookings, totalDocs] = await Promise.all([
+    Booking.find(filter)
+      .populate("userId", "f_name l_name email")
+      .sort({ checkInDate: 1 }) // Sort by upcoming date
+      .skip(skip)
+      .limit(limit),
+    Booking.countDocuments(filter),
+  ]);
+
+  // 3. Calculate total pages
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  // 4. Return paginated response
+  return {
+    data: bookings,
+    meta: {
+      page,
+      limit,
+      totalDocs,
+      totalPages,
+    },
+  };
+};
+
+/**
+ * Get all paginated bookings for a specific user.
+ */
+export const getMyBookings = async (
+  userId: string,
+  options: IQueryOptions
+): Promise<IPaginatedBookings> => {
+  const filter = { userId: new Types.ObjectId(userId) };
+  return getPaginatedBookings(filter, options);
+};
+
+/**
+ * Get paginated bookings for a user with a check-in date of today.
+ */
+export const getTodayBookings = async (
+  userId: string,
+  options: IQueryOptions
+): Promise<IPaginatedBookings> => {
+  // Set start of today
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  // Set end of today
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const filter = {
+    userId: new Types.ObjectId(userId),
+    checkInDate: {
+      $gte: todayStart,
+      $lte: todayEnd,
+    },
+  };
+  return getPaginatedBookings(filter, options);
+};
+
+/**
+ * Get paginated bookings for a user with a check-in date of tomorrow.
+ */
+export const getTommorrowBookings = async (
+  userId: string,
+  options: IQueryOptions
+): Promise<IPaginatedBookings> => {
+  // Set start of tomorrow
+  const tomorrowStart = new Date();
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+  tomorrowStart.setHours(0, 0, 0, 0);
+
+  // Set end of tomorrow
+  const tomorrowEnd = new Date();
+  tomorrowEnd.setDate(tomorrowEnd.getDate() + 1);
+  tomorrowEnd.setHours(23, 59, 59, 999);
+
+  const filter = {
+    userId: new Types.ObjectId(userId),
+    checkInDate: {
+      $gte: tomorrowStart,
+      $lte: tomorrowEnd,
+    },
+  };
+  return getPaginatedBookings(filter, options);
+};
