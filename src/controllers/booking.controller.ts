@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import * as bookingService from "../services/booking.service";
 import { Types } from "mongoose";
 import { logger } from "../config/logger.config";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "../utils/ApiError";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { IBooking } from "../types/booking.types";
 
@@ -88,7 +92,9 @@ export const deleteBooking = async (
       throw new NotFoundError("Booking not found");
     }
     await bookingService.deleteBooking(bookingId);
-    res.status(200).json(new ApiResponse(200, null, "Booking deleted successfully"));
+    res
+      .status(200)
+      .json(new ApiResponse(200, null, "Booking deleted successfully"));
   } catch (error) {
     logger.error("Error deleting booking:", error);
     next(error);
@@ -204,6 +210,40 @@ export const getMyBookings = async (
       .status(200)
       .json(new ApiResponse(200, result, "Bookings retrieved successfully"));
   } catch (error) {
+    next(error);
+  }
+};
+
+export const getCheckedInBookingsForDoctor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // 1. Parse pagination from query parameters
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+
+    // 2. Call the service
+    const result = await bookingService.getCheckedInBookingsForDoctor({
+      page,
+      limit,
+    });
+
+    if (result.data.length === 0) {
+      throw new NotFoundError("No checked-in bookings found for today");
+    }
+
+    // 3. Send the successful paginated response
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        result, // This contains the { data: [...], meta: {...} } object
+        "Checked-in bookings retrieved successfully"
+      )
+    );
+  } catch (error) {
+    // 4. Pass errors to your global error handler
     next(error);
   }
 };

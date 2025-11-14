@@ -43,4 +43,10 @@ router.get(
     bookingController.getMyBookings
 );
 
+router.get(
+    '/checked-in',
+    authorize([ROLES.Doctor]),
+    bookingController.getCheckedInBookingsForDoctor
+);
+
 export default router;

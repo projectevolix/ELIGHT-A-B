@@ -166,3 +166,50 @@ export const getMyBookings = async (
   const filter = { userId: new Types.ObjectId(userId) };
   return getPaginatedBookings(filter, options);
 };
+
+export const getCheckedInBookingsForDoctor = async (
+  options: IQueryOptions
+): Promise<IPaginatedBookings> => {
+  // 1. Set pagination defaults
+  const page = options.page || 1;
+  const limit = options.limit || 10;
+  const skip = (page - 1) * limit;
+
+  // 2. Set the date filter for "today"
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0); // Start of today
+
+  // 3. Build the filter
+  const filter: FilterQuery<IBooking> = {
+    checkOutDate: { $gte: todayStart }, // Check-out date is on or after today
+    status: BookingStatus.Accepted,    // Only get 'accepted' bookings
+    is_active: true,                   // Only get 'active' bookings
+  };
+
+  // 4. Run queries in parallel
+  const [bookings, totalDocs] = await Promise.all([
+    // Query 1: Get the paginated documents
+    Booking.find(filter)
+      .populate("userId", "f_name l_name email address id_card_number description") // Populate user details
+      .sort({ checkOutDate: 1 }) // Sort by soonest check-out
+      .skip(skip)
+      .limit(limit),
+
+    // Query 2: Get the total count
+    Booking.countDocuments(filter),
+  ]);
+
+  // 5. Calculate total pages
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  // 6. Return the paginated response
+  return {
+    data: bookings,
+    meta: {
+      page,
+      limit,
+      totalDocs,
+      totalPages,
+    },
+  };
+};
