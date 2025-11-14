@@ -3,7 +3,6 @@ import * as userService from "../services/user.service";
 import { ApiResponse } from "../utils/ApiResponse";
 import { UserRole } from "../constants/roles.constants";
 import { NotFoundError } from "../utils/ApiError";
-import { Types } from "mongoose";
 
 export const getProfile = async (
   req: Request,
@@ -73,34 +72,24 @@ export const deleteUser = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) => { 
   try {
-    // 1. Get the userId from the URL parameters
     const { userId } = req.params;
 
-    if (!Types.ObjectId.isValid(userId)) {
-      throw new NotFoundError("User not found");
-    }
-
-    // 2. Call the service to deactivate the user
     const deletedUser = await userService.deleteUser(userId);
 
-    
-    // 3. If no user was found/updated, throw a 404 error
     if (!deletedUser) {
       throw new NotFoundError("User not found");
     }
 
-    // 4. Send a successful response
     res.status(200).json(
       new ApiResponse(
         200,
-        null, // No data needed, just confirmation
+        null, 
         "User deleted successfully"
       )
     );
   } catch (error) {
-    // 5. Pass any errors to the global error handler
     next(error);
   }
 };

@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { IUser, User } from "../models/user.model";
 import { IPaginatedUsers, IUserQueryOptions } from "../types/user.tyoes";
 import { ROLES } from "../constants/roles.constants";
@@ -79,17 +79,15 @@ export const getAllUsers = async (
 };
 
 export const deleteUser = async (userId: string): Promise<IUser | null> => { 
-  // 1. Validate the ID format
-  
+  if (!Types.ObjectId.isValid(userId)) {
+    return null;
+  }
 
-  // 2. Find the user and update the is_active field
-  // { new: true } returns the modified document, not the original
   const deactivatedUser = await User.findByIdAndUpdate(
     userId,
-    { is_active: false }, // The update
+    { is_active: false }, 
     { new: true }
   );
   
-  // 3. Return the updated user (or null if not found)
   return deactivatedUser;
 }
