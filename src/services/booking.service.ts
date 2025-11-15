@@ -147,15 +147,18 @@ export const getMyBookings = async (
 export const getCheckedInBookingsForDoctor = async (
   options: IQueryOptions
 ): Promise<IPaginatedBookings> => {
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
+  // Set today's date at midnight
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
+  // Filter for bookings that are currently "checked in":
+  // - checkInDate <= today (guest has already checked in)
+  // - checkOutDate >= today (guest hasn't checked out yet)
+  // - status is ACCEPTED
+  // - booking is active
   const filter: FilterQuery<IBooking> = {
-    checkInDate: { $lte: todayEnd },
-    checkOutDate: { $gte: todayStart },
+    checkInDate: { $lte: today },
+    checkOutDate: { $gte: today },
     status: BookingStatus.Accepted,
     is_active: true,
   };
