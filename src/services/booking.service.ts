@@ -63,15 +63,15 @@ export const getAllBookings = async (
   // Handle date range filter
   if (options.startDate || options.endDate) {
     const dateFilter: any = {};
-    
+
     if (options.startDate) {
       dateFilter.$gte = new Date(options.startDate);
     }
-    
+
     if (options.endDate) {
       dateFilter.$lte = new Date(options.endDate);
     }
-    
+
     bookingFilter.checkInDate = dateFilter;
   }
 
@@ -156,16 +156,10 @@ export const getCheckedInBookingsForDoctor = async (
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0); // Start of today
 
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999); // End of today
-
-  // 3. Build the filter for "Today's Sessions"
+  // 3. Build the filter
   const filter: FilterQuery<IBooking> = {
-    // The session must have started on or before the END of today
-    checkInDate: { $lte: todayEnd }, 
     
-    // The session must end on or after the START of today
-    checkOutDate: { $gte: todayStart }, 
+    checkOutDate: { $gte: todayStart },
 
     status: BookingStatus.Accepted,
     is_active: true,
@@ -175,7 +169,7 @@ export const getCheckedInBookingsForDoctor = async (
   const [bookings, totalDocs] = await Promise.all([
     Booking.find(filter)
       .populate("userId", "f_name l_name email")
-      .sort({ checkOutDate: 1 }) 
+      .sort({ checkOutDate: 1 }) // Sort by soonest check-out
       .skip(skip)
       .limit(limit),
     Booking.countDocuments(filter),
