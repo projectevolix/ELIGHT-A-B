@@ -153,17 +153,25 @@ export const getMyBookings = asyncHandler(
 
 export const getCheckedInBookingsForDoctor = asyncHandler(
   async (req: Request, res: Response) => {
-    const { page, limit } = parsePaginationParams(req);
+    // 1. Parse pagination from query parameters
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
 
+    // 2. Call the service
     const result = await bookingService.getCheckedInBookingsForDoctor({
       page,
       limit,
     });
 
-    const message = result.data.length === 0 
-      ? "No checked-in bookings found for today"
-      : "Checked-in bookings retrieved successfully";
-
-    res.status(200).json(new ApiResponse(200, result, message));
+    // 3. Send the successful paginated response
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        result, // This contains the { data: [...], meta: {...} } object
+        result.data.length === 0 
+          ? "No checked-in bookings found for today"
+          : "Checked-in bookings retrieved successfully"
+      )
+    );
   }
 );
