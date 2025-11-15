@@ -23,6 +23,8 @@ export interface IQueryOptions {
   page?: number;
   limit?: number;
   search?: string; // For f_name, l_name
+  startDate?: string; // Start date for date range filter
+  endDate?: string; // End date for date range filter
 }
 
 /**

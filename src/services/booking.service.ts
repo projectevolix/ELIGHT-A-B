@@ -8,85 +8,95 @@ import {
 } from "../types/booking.types";
 import { User } from "../models/user.model";
 import { BookingStatus } from "../constants/booking.constants";
-import { BadRequestError, NotFoundError } from "../utils/ApiError";
+import { BadRequestError } from "../utils/ApiError";
 
-export const getAllBookings = async (
-  options: IQueryOptions
+// Helper function to calculate pagination metadata
+const calculatePaginationMeta = (page: number, limit: number, totalDocs: number) => {
+  const totalPages = Math.ceil(totalDocs / limit);
+  const skip = (page - 1) * limit;
+  return { page, limit, totalDocs, totalPages, skip };
+};
+
+// Generic pagination function for bookings
+const getPaginatedBookings = async (
+  filter: FilterQuery<IBooking>,
+  options: IQueryOptions,
+  sortOptions: Record<string, 1 | -1> = { createdAt: -1 }
 ): Promise<IPaginatedBookings> => {
-  // --- 1. Set Defaults & Pagination ---
   const page = options.page || 1;
   const limit = options.limit || 10;
   const skip = (page - 1) * limit;
 
-  // --- 2. Build Filter Query ---
-  const bookingFilter: FilterQuery<IBooking> = {};
+  const [bookings, totalDocs] = await Promise.all([
+    Booking.find(filter)
+      .populate("userId", "f_name l_name email address id_card_number description")
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit),
+    Booking.countDocuments(filter),
+  ]);
 
-  // --- 3. Handle Search (f_name, l_name) ---
+  const { totalPages } = calculatePaginationMeta(page, limit, totalDocs);
+
+  return {
+    data: bookings,
+    meta: { page, limit, totalDocs, totalPages },
+  };
+};
+
+export const getAllBookings = async (
+  options: IQueryOptions
+): Promise<IPaginatedBookings> => {
+  const bookingFilter: FilterQuery<IBooking> = { is_active: true };
+
+  // Handle search by user name
   if (options.search) {
     const searchRegex = new RegExp(options.search, "i");
-
-    // Find users who match the search
     const matchingUsers = await User.find({
       $or: [{ f_name: searchRegex }, { l_name: searchRegex }],
-    }).select("_id"); // We only need their IDs
+    }).select("_id");
 
-    // Get an array of just the IDs
     const userIds = matchingUsers.map((user) => user._id);
-
-    // Filter bookings where the 'userId' is in our list of matched users
     bookingFilter.userId = { $in: userIds };
   }
 
-  // --- 4. Execute Queries ---
-  const [bookings, totalDocs] = await Promise.all([
-    // Query 1: Get the paginated bookings
-    Booking.find(bookingFilter)
-      .populate("userId", "f_name l_name email") // Populate user details
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
+  // Handle date range filter
+  if (options.startDate || options.endDate) {
+    const dateFilter: any = {};
+    
+    if (options.startDate) {
+      dateFilter.$gte = new Date(options.startDate);
+    }
+    
+    if (options.endDate) {
+      dateFilter.$lte = new Date(options.endDate);
+    }
+    
+    bookingFilter.checkInDate = dateFilter;
+  }
 
-    // Query 2: Get the total document count matching the filter
-    Booking.countDocuments(bookingFilter),
-  ]);
-
-  // --- 5. Calculate Total Pages ---
-  const totalPages = Math.ceil(totalDocs / limit);
-
-  // --- 6. Format and Return Response ---
-  return {
-    data: bookings,
-    meta: {
-      page,
-      limit,
-      totalDocs,
-      totalPages,
-    },
-  };
+  return getPaginatedBookings(bookingFilter, options);
 };
 
 export const createBooking = async (
   data: CreateBookingInput
 ): Promise<IBooking> => {
   const newBooking = new Booking(data);
-
   await newBooking.save();
-
   return newBooking;
 };
 
 export const deleteBooking = async (
   bookingId: string
 ): Promise<IBooking | null> => {
-  // Validate the ID
   if (!Types.ObjectId.isValid(bookingId)) {
     throw new BadRequestError("Invalid booking ID format");
   }
 
   const deletedBooking = await Booking.findByIdAndUpdate(
     bookingId,
-    { is_active: false }, 
-    { new: true } 
+    { is_active: false },
+    { new: true }
   );
 
   return deletedBooking;
@@ -101,6 +111,7 @@ export const updateBookingStatus = async (
     { status: newStatus },
     { new: true }
   ).populate("userId", "f_name l_name email");
+
   return updatedBooking;
 };
 
@@ -108,108 +119,47 @@ export const updateBookingDetails = async (
   bookingId: string,
   updateData: Partial<IBooking>
 ): Promise<IBooking | null> => {
-  // 1. Validate the ID format
   if (!Types.ObjectId.isValid(bookingId)) {
     throw new BadRequestError("Invalid booking ID format");
   }
 
-  // 2. Find the booking and update it
-  // { new: true } tells Mongoose to return the *updated* document
   const updatedBooking = await Booking.findByIdAndUpdate(
     bookingId,
-    { $set: updateData }, // Use $set to apply partial updates safely
+    { $set: updateData },
     { new: true }
-  ).populate("userId", "f_name l_name email"); // Populate user details
+  ).populate("userId", "f_name l_name email");
 
-  // 3. Return the updated document (or null if not found)
   return updatedBooking;
-};
-
-const getPaginatedBookings = async (
-  filter: FilterQuery<IBooking>,
-  options: IQueryOptions
-): Promise<IPaginatedBookings> => {
-  // 1. Set pagination defaults
-  const page = options.page || 1;
-  const limit = options.limit || 10;
-  const skip = (page - 1) * limit;
-
-  // 2. Run queries in parallel
-  const [bookings, totalDocs] = await Promise.all([
-    Booking.find(filter)
-      .populate("userId", "f_name l_name email")
-      .sort({ checkInDate: 1 }) // Sort by upcoming date
-      .skip(skip)
-      .limit(limit),
-    Booking.countDocuments(filter),
-  ]);
-
-  // 3. Calculate total pages
-  const totalPages = Math.ceil(totalDocs / limit);
-
-  // 4. Return paginated response
-  return {
-    data: bookings,
-    meta: {
-      page,
-      limit,
-      totalDocs,
-      totalPages,
-    },
-  };
 };
 
 export const getMyBookings = async (
   userId: string,
   options: IQueryOptions
 ): Promise<IPaginatedBookings> => {
-  const filter = { userId: new Types.ObjectId(userId) };
-  return getPaginatedBookings(filter, options);
+  const filter: FilterQuery<IBooking> = {
+    userId: new Types.ObjectId(userId),
+    is_active: true,
+  };
+
+  return getPaginatedBookings(filter, options, { checkInDate: 1 });
 };
 
 export const getCheckedInBookingsForDoctor = async (
   options: IQueryOptions
 ): Promise<IPaginatedBookings> => {
-  // 1. Set pagination defaults
-  const page = options.page || 1;
-  const limit = options.limit || 10;
-  const skip = (page - 1) * limit;
-
-  // 2. Set the date filter for "today"
   const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0); // Start of today
+  todayStart.setHours(0, 0, 0, 0);
+  
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
 
-  // 3. Build the filter
   const filter: FilterQuery<IBooking> = {
-    checkOutDate: { $gte: todayStart }, // Check-out date is on or after today
-    status: BookingStatus.Accepted,    // Only get 'accepted' bookings
-    is_active: true,                   // Only get 'active' bookings
+    checkInDate: { $lte: todayEnd },
+    checkOutDate: { $gte: todayStart },
+    status: BookingStatus.Accepted,
+    is_active: true,
   };
 
-  // 4. Run queries in parallel
-  const [bookings, totalDocs] = await Promise.all([
-    // Query 1: Get the paginated documents
-    Booking.find(filter)
-      .populate("userId", "f_name l_name email address id_card_number description") // Populate user details
-      .sort({ checkOutDate: 1 }) // Sort by soonest check-out
-      .skip(skip)
-      .limit(limit),
-
-    // Query 2: Get the total count
-    Booking.countDocuments(filter),
-  ]);
-
-  // 5. Calculate total pages
-  const totalPages = Math.ceil(totalDocs / limit);
-
-  // 6. Return the paginated response
-  return {
-    data: bookings,
-    meta: {
-      page,
-      limit,
-      totalDocs,
-      totalPages,
-    },
-  };
+  return getPaginatedBookings(filter, options, { checkOutDate: 1 });
 };
+
