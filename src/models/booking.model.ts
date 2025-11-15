@@ -16,7 +16,7 @@ const bookingSchema = new Schema<IBooking>({
         type: Date,
         required: true
     },
-    description: {
+    description: { // ain krnn 
         type: String,
         required: false
     },

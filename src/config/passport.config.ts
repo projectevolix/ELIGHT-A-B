@@ -51,7 +51,7 @@ async (accessToken, refreshToken, profile, done) => {
       googleId: profile.id,
       f_name: f_name,
       l_name: l_name,
-      roles: [ROLES.User],
+      role: ROLES.User,
       phoneNumber: '',
       address: '',
       id_card_number: '',

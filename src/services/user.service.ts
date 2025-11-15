@@ -1,6 +1,6 @@
 import { FilterQuery, Types } from "mongoose";
 import { IUser, User } from "../models/user.model";
-import { IPaginatedUsers, IUserQueryOptions } from "../types/user.tyoes";
+import { IPaginatedUsers, IUserQueryOptions } from "../types/user.types";
 import { ROLES } from "../constants/roles.constants";
 
 export const getProfile = async (userId: string) => {

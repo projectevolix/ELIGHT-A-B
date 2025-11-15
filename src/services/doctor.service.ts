@@ -15,7 +15,7 @@ export const createDoctor = async (
   // 2. Create the new user with the "doctor" role
   const newDoctor = new User({
     ...data,
-    roles: [ROLES.Doctor], 
+    role: ROLES.Doctor, 
   });
 
   // 3. Save the user (password will be hashed by the pre-save hook)

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError';
-import { NODE_ENV } from '../config/env.config';
 import mongoose from 'mongoose'; 
 import { logger } from '../config/logger.config';
 

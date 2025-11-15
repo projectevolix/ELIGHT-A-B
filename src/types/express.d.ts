@@ -5,7 +5,7 @@ import { UserRole } from '../constants/roles.constants';
 export interface JwtPayload {
   [x: string]: ObjectId;
   id: string;
-  roles: UserRole[];
+  role: UserRole;
 }
 
 // 2. Augment the 'express-serve-static-core' module

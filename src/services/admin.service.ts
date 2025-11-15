@@ -3,6 +3,7 @@ import { AdminCreationData } from "../types/admin.types";
 import { IUser, User } from "../models/user.model";
 import { logger } from "../config/logger.config";
 import { BadRequestError } from "../utils/ApiError";
+import { ROLES } from "../constants/roles.constants";
 
 export const createAdmin = async (data: AdminCreationData): Promise<IUser> => {
     // 1. Check if user (admin) already exists
@@ -15,7 +16,7 @@ export const createAdmin = async (data: AdminCreationData): Promise<IUser> => {
     // 2. Create the new admin user
     const newAdmin = new User({
         ...data,
-        roles: ['admin'], // Hardcode the role to 'admin'
+        role: ROLES.Admin, 
         is_active: true
     });
 

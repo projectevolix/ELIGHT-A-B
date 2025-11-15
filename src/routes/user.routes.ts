@@ -8,7 +8,7 @@ const router = Router();
 router.use(authenticate);
 
 router.get(
-  '/profile', 
+  '/me', 
   authorize([ROLES.User, ROLES.Admin, ROLES.Therapist, ROLES.Doctor]), 
   userController.getProfile
 );

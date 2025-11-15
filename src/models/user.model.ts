@@ -17,7 +17,7 @@ export interface IUser extends Document {
   is_active?: boolean;
   password?: string;
   googleId?: string;
-  roles: UserRole[];
+  role: UserRole;
   refreshTokens: string[];
   comparePassword(password: string): Promise<boolean>;
 }
@@ -67,16 +67,16 @@ const userSchema = new Schema<IUser>(
     },
     passwordResetToken: {
       type: String,
-      select: false, // Don't send this to the client
+      select: false, 
     },
     passwordResetExpires: {
       type: Date,
-      select: false, // Don't send this to the client
+      select: false, 
     },
     is_active: { type: Boolean, default: true },
     password: { type: String, required: false, select: false },
     googleId: { type: String, required: false, unique: true, sparse: true },
-    roles: { type: [String], enum: ROLE_LIST, default: [ROLES.User] },
+    role: { type: String, enum: ROLE_LIST, default: ROLES.User },
     refreshTokens: [{ type: String, select: false }],
   },
   { timestamps: true }

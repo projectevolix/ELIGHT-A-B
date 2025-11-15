@@ -13,7 +13,7 @@ export const createTherapist = async (
 
   const newTherapist = new User({
     ...data,
-    roles: [ROLES.Therapist], 
+    role: ROLES.Therapist, 
   });
 
   await newTherapist.save();

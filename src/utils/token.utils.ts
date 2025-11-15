@@ -14,7 +14,7 @@ import { JwtPayload } from '../types/express';
 export const generateAccessToken = (user: IUser): string => {
   const payload: JwtPayload = {
     id: user._id.toString(), 
-    roles: user.roles,
+    role: user.role,
   };
   const options: SignOptions = { expiresIn: JWT_EXPIRES_IN as SignOptions['expiresIn'] };
   return jwt.sign(payload, JWT_SECRET as Secret, options);
