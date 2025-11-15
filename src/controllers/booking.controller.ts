@@ -63,6 +63,12 @@ export const getAllBookings = asyncHandler(
       endDate,
     });
 
+    if (result.data.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, result, "No bookings found")
+      );
+    }
+
     res.status(200).json(
       new ApiResponse(200, result, "Bookings retrieved successfully")
     );
@@ -144,6 +150,12 @@ export const getMyBookings = asyncHandler(
     const { page, limit } = parsePaginationParams(req);
 
     const result = await bookingService.getMyBookings(userId, { page, limit });
+
+    if (result.data.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, result, "No bookings found")
+      );
+    }
 
     res.status(200).json(
       new ApiResponse(200, result, "Bookings retrieved successfully")

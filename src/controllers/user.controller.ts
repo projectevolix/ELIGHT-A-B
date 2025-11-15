@@ -41,6 +41,12 @@ export const getAllEmployees = asyncHandler(
 
     const result = await userService.getAllEmployees({ page, limit, role });
 
+    if (result.data.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, result, "No employees found")
+      );
+    }
+
     res.status(200).json(
       new ApiResponse(200, result, "Employees retrieved successfully")
     );
@@ -52,6 +58,12 @@ export const getAllUsers = asyncHandler(
     const { page, limit } = parsePaginationParams(req);
 
     const result = await userService.getAllUsers({ page, limit });
+
+    if (result.data.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, result, "No users found")
+      );
+    }
 
     res.status(200).json(
       new ApiResponse(200, result, "Users retrieved successfully")

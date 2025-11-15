@@ -9,7 +9,7 @@ router.use(authenticate)
 
 router.get(
     '/',
-    authorize([ROLES.Admin]),
+    authorize([ROLES.Admin , ROLES.Doctor]),
     treatmentController.getAllTreatments
 );
 

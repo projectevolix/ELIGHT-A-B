@@ -50,6 +50,12 @@ export const getAllCabins = asyncHandler(
 
     const result = await cabinService.getAllCabins({ page, limit });
 
+    if (result.data.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, result, "No cabins found")
+      );
+    }
+
     res.status(200).json(
       new ApiResponse(200, result, "Cabins retrieved successfully")
     );

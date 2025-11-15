@@ -11,6 +11,12 @@ export const getAllTreatments = asyncHandler(
 
     const result = await treatmentService.getAllTreatments({ page, limit });
 
+    if (result.data.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, result, "No treatments found")
+      );
+    }
+
     res.status(200).json(
       new ApiResponse(200, result, "Treatments retrieved successfully")
     );
