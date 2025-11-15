@@ -2,6 +2,7 @@ import { FilterQuery, Types } from "mongoose";
 import { IUser, User } from "../models/user.model";
 import { IPaginatedUsers, IUserQueryOptions } from "../types/user.types";
 import { ROLES } from "../constants/roles.constants";
+import { BadRequestError } from "../utils/ApiError";
 
 export const getProfile = async (userId: string) => {
   const user = await User.findById(userId).select("-password -refreshTokens");
@@ -80,7 +81,7 @@ export const getAllUsers = async (
 
 export const deleteUser = async (userId: string): Promise<IUser | null> => { 
   if (!Types.ObjectId.isValid(userId)) {
-    return null;
+    throw new BadRequestError("Invalid user ID format");
   }
 
   const deactivatedUser = await User.findByIdAndUpdate(

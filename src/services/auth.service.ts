@@ -8,6 +8,7 @@ import {
   BadRequestError,
   UnauthorizedError,
   NotFoundError,
+  ConflictError,
 } from "../utils/ApiError";
 
 /**
@@ -27,7 +28,7 @@ export const registerUser = async (
 ): Promise<IUser> => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    throw new BadRequestError("Email already in use.");
+    throw new ConflictError("Email already in use.");
   }
 
   // Create the new user with all fields

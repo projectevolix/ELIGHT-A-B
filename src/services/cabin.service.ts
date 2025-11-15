@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Cabin } from "../models/cabin.model";
 import { CreateCabinInput, ICabin, IPaginatedCabins, UpdateCabinInput } from "../types/cabin.types";
-import { BadRequestError } from "../utils/ApiError";
+import { BadRequestError, ConflictError } from "../utils/ApiError";
 import { IQueryOptions } from "../types/treatment.types";
 import { FilterQuery, Types } from "mongoose";
 
@@ -11,7 +11,7 @@ export const createCabin = async (
 
   const existingCabin = await Cabin.findOne({ name: data.name });
   if (existingCabin) {
-    throw new BadRequestError("A cabin with this name already exists.");
+    throw new ConflictError("A cabin with this name already exists.");
   }
 
   const newCabin = new Cabin({
@@ -58,7 +58,7 @@ export const getCabinById = async (
   cabinId: string
 ): Promise<ICabin | null> => {
   if (!Types.ObjectId.isValid(cabinId)) {
-    return null;
+    throw new BadRequestError("Invalid cabin ID format");
   }
   return Cabin.findById(cabinId);
 };
@@ -68,7 +68,7 @@ export const updateCabin = async (
   updateData: UpdateCabinInput
 ): Promise<ICabin | null> => {
   if (!Types.ObjectId.isValid(cabinId)) {
-    return null;
+    throw new BadRequestError("Invalid cabin ID format");
   }
   return Cabin.findByIdAndUpdate(
     cabinId,
@@ -81,7 +81,7 @@ export const deleteCabin = async (
   cabinId: string
 ): Promise<ICabin | null> => {
   if (!Types.ObjectId.isValid(cabinId)) {
-    return null;
+    throw new BadRequestError("Invalid cabin ID format");
   }
   return Cabin.findByIdAndUpdate(
     cabinId,

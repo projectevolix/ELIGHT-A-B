@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AdminCreationData } from "../types/admin.types";
 import { IUser, User } from "../models/user.model";
 import { logger } from "../config/logger.config";
-import { BadRequestError } from "../utils/ApiError";
+import { BadRequestError, ConflictError } from "../utils/ApiError";
 import { ROLES } from "../constants/roles.constants";
 
 export const createAdmin = async (data: AdminCreationData): Promise<IUser> => {
@@ -10,7 +10,7 @@ export const createAdmin = async (data: AdminCreationData): Promise<IUser> => {
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {
         // Throw a specific error that the controller can catch
-        throw new Error("An account with this email already exists.");
+        throw new ConflictError("An account with this email already exists.");
     }
 
     // 2. Create the new admin user
@@ -21,17 +21,8 @@ export const createAdmin = async (data: AdminCreationData): Promise<IUser> => {
     });
 
     // 3. Save to the database (the 'pre-save' hook will hash the password)
-    try {
-        await newAdmin.save();
-    } catch (error) {
-        logger.error("Error saving new admin user:", error);
-        throw new BadRequestError("Failed to create admin user.");
-    }
+    await newAdmin.save();
 
     // 4. Return the new user
-    // Note: Mongoose's .save() returns the doc. If you need to remove the password:
-    const adminObject = newAdmin.toObject();
-    delete adminObject.password;
-    
-    return adminObject;
+    return newAdmin;
 };

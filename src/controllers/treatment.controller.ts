@@ -1,15 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import * as treatmentService from "../services/treatment.service";
-import { BadRequestError, NotFoundError } from "../utils/ApiError";
+import { BadRequestError, NotFoundError, asyncHandler } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { IThreatment } from "../types/treatment.types";
 
-export const getAllTreatments = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getAllTreatments = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Parse pagination from query parameters
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
@@ -25,18 +21,11 @@ export const getAllTreatments = async (
         "Treatments retrieved successfully"
       )
     );
-  } catch (error) {
-    // 4. Pass errors to your global error handler
-    next(error);
   }
-};
+);
 
-export const createTreatment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createTreatment = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Get data from the request body
     const {
       name,
@@ -72,19 +61,11 @@ export const createTreatment = async (
         "Treatment created successfully"
       )
     );
-    
-  } catch (error) {
-    // 5. Pass any errors to your global error handler
-    next(error);
   }
-};
+);
 
-export const updateTreatment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateTreatment = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Get the ID from the URL parameters
     const { id } = req.params;
 
@@ -131,19 +112,11 @@ export const updateTreatment = async (
         "Treatment updated successfully"
       )
     );
-    
-  } catch (error) {
-    // 8. Pass any errors to the global error handler
-    next(error);
   }
-};
+);
 
-export const deleteTreatment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const deleteTreatment = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Get the ID from the URL parameters
     const { id } = req.params;
 
@@ -164,8 +137,5 @@ export const deleteTreatment = async (
         "Treatment deleted successfully"
       )
     );
-  } catch (error) {
-    // 5. Pass any errors to the global error handler
-    next(error);
   }
-};
+);

@@ -1,7 +1,7 @@
 import { ROLES } from "../constants/roles.constants";
 import { IUser, User } from "../models/user.model";
 import { CreateDoctorInput } from "../types/doctor.types";
-import { BadRequestError } from "../utils/ApiError";
+import { ConflictError } from "../utils/ApiError";
 
 export const createDoctor = async (
   data: CreateDoctorInput
@@ -9,7 +9,7 @@ export const createDoctor = async (
   // 1. Check if a user with this email already exists
   const existingUser = await User.findOne({ email: data.email });
   if (existingUser) {
-    throw new BadRequestError("A user with this email already exists.");
+    throw new ConflictError("A user with this email already exists.");
   }
 
   // 2. Create the new user with the "doctor" role

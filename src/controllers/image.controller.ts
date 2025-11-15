@@ -1,14 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../utils/ApiError";
+import { BadRequestError, asyncHandler } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { imageUploader } from "../utils/imageUploader";
 
-export const saveImageAndGetUrl = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const saveImageAndGetUrl = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Check if a file was attached by Multer
     if (!req.file) {
       throw new BadRequestError("No image file provided.");
@@ -25,8 +21,5 @@ export const saveImageAndGetUrl = async (
         "Image uploaded successfully"
       )
     );
-  } catch (error) {
-    // 4. Pass errors to the error handler
-    next(error);
   }
-};
+);

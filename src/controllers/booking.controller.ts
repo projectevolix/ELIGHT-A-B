@@ -6,22 +6,19 @@ import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
+  asyncHandler,
 } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { IBooking } from "../types/booking.types";
 
-export const createBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createBooking = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Get booking data from the request body
     const { checkInDate, checkOutDate, description } = req.body;
 
     // 2. Get the authenticated user's ID from req.user
     if (!req.user) {
-      return res.status(401).json({ message: "Not authorized, no user" });
+      throw new UnauthorizedError("Not authorized, no user");
     }
 
     // Create a mongoose ObjectId from the string id (safer than a direct cast)
@@ -39,22 +36,14 @@ export const createBooking = async (
     const newBooking = await bookingService.createBooking(bookingData);
 
     // 6. Send the successful response
-    res.status(201).json({
-      message: "Booking created successfully",
-      data: newBooking,
-    });
-  } catch (error) {
-    logger.error("Error creating booking:", error);
-    next(error);
+    res.status(201).json(
+      new ApiResponse(201, newBooking, "Booking created successfully")
+    );
   }
-};
+);
 
-export const getAllBookings = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getAllBookings = asyncHandler(
+  async (req: Request, res: Response) => {
     // --- 1. Parse Query Parameters ---
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
@@ -75,17 +64,11 @@ export const getAllBookings = async (
       data: result.data,
       meta: result.meta,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const deleteBooking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const deleteBooking = asyncHandler(
+  async (req: Request, res: Response) => {
     const { bookingId } = req.params;
 
     if (!Types.ObjectId.isValid(bookingId)) {
@@ -95,18 +78,11 @@ export const deleteBooking = async (
     res
       .status(200)
       .json(new ApiResponse(200, null, "Booking deleted successfully"));
-  } catch (error) {
-    logger.error("Error deleting booking:", error);
-    next(error);
   }
-};
+);
 
-export const updateBookingStatus = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateBookingStatus = asyncHandler(
+  async (req: Request, res: Response) => {
     const { bookingId } = req.params;
     const { status } = req.body;
 
@@ -123,26 +99,14 @@ export const updateBookingStatus = async (
       throw new NotFoundError("Booking not found");
     }
 
-    // res.status(200).json({
-    //   message: "Status updated",
-    //   data: updatedBooking
-    // });
-
     res
       .status(200)
       .json(new ApiResponse(200, updatedBooking, "Status updated"));
-  } catch (error) {
-    logger.error("Error updating booking status:", error);
-    next(error);
   }
-};
+);
 
-export const updateBookingDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateBookingDetails = asyncHandler(
+  async (req: Request, res: Response) => {
     const { bookingId } = req.params;
     const { checkInDate, checkOutDate, description } = req.body;
 
@@ -178,11 +142,8 @@ export const updateBookingDetails = async (
           "Booking details updated successfully"
         )
       );
-  } catch (error) {
-    logger.error("Error updating booking details:", error);
-    next(error);
   }
-};
+);
 
 const getAuthAndPagination = (req: Request) => {
   if (!req.user) {
@@ -197,29 +158,19 @@ const getAuthAndPagination = (req: Request) => {
   return { userId, options: { page, limit } };
 };
 
-export const getMyBookings = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getMyBookings = asyncHandler(
+  async (req: Request, res: Response) => {
     const { userId, options } = getAuthAndPagination(req);
     const result = await bookingService.getMyBookings(userId, options);
 
     res
       .status(200)
       .json(new ApiResponse(200, result, "Bookings retrieved successfully"));
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const getCheckedInBookingsForDoctor = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getCheckedInBookingsForDoctor = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Parse pagination from query parameters
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
@@ -242,8 +193,5 @@ export const getCheckedInBookingsForDoctor = async (
         "Checked-in bookings retrieved successfully"
       )
     );
-  } catch (error) {
-    // 4. Pass errors to your global error handler
-    next(error);
   }
-};
+);

@@ -1,15 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError, NotFoundError } from "../utils/ApiError";
+import { BadRequestError, NotFoundError, asyncHandler } from "../utils/ApiError";
 import * as cabinService from "../services/cabin.service";
 import { ApiResponse } from "../utils/ApiResponse";
 import {  Types } from "mongoose";
 
-export const createCabin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createCabin = asyncHandler(
+  async (req: Request, res: Response) => {
     const { name, description, imageURL } = req.body;
 
     if (!name) {
@@ -29,17 +25,11 @@ export const createCabin = async (
         "Cabin created successfully"
       )
     );
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const getCabinById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getCabinById = asyncHandler(
+  async (req: Request, res: Response) => {
     const { cabinId } = req.params;
 
     if (!Types.ObjectId.isValid(cabinId)) {
@@ -54,17 +44,11 @@ export const getCabinById = async (
     res
       .status(200)
       .json(new ApiResponse(200, cabin, "Cabin retrieved successfully"));
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const getAllCabins = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const getAllCabins = asyncHandler(
+  async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
 
@@ -73,17 +57,11 @@ export const getAllCabins = async (
     res
       .status(200)
       .json(new ApiResponse(200, result, "Cabins retrieved successfully"));
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const updateCabin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const updateCabin = asyncHandler(
+  async (req: Request, res: Response) => {
     const { cabinId } = req.params;
     const { name, description, imageURL } = req.body;
 
@@ -105,17 +83,11 @@ export const updateCabin = async (
     res
       .status(200)
       .json(new ApiResponse(200, updatedCabin, "Cabin updated successfully"));
-  } catch (error) {
-    next(error);
   }
-};
+);
 
-export const deleteCabin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const deleteCabin = asyncHandler(
+  async (req: Request, res: Response) => {
     const { cabinId } = req.params;
 
     const deletedCabin = await cabinService.deleteCabin(cabinId);
@@ -127,7 +99,5 @@ export const deleteCabin = async (
     res
       .status(200)
       .json(new ApiResponse(200, null, "Cabin deleted successfully"));
-  } catch (error) {
-    next(error);
   }
-};
+);

@@ -8,7 +8,7 @@ import {
 } from "../types/booking.types";
 import { User } from "../models/user.model";
 import { BookingStatus } from "../constants/booking.constants";
-import { NotFoundError } from "../utils/ApiError";
+import { BadRequestError, NotFoundError } from "../utils/ApiError";
 
 export const getAllBookings = async (
   options: IQueryOptions
@@ -80,7 +80,7 @@ export const deleteBooking = async (
 ): Promise<IBooking | null> => {
   // Validate the ID
   if (!Types.ObjectId.isValid(bookingId)) {
-    return null;
+    throw new BadRequestError("Invalid booking ID format");
   }
 
   const deletedBooking = await Booking.findByIdAndUpdate(
@@ -110,7 +110,7 @@ export const updateBookingDetails = async (
 ): Promise<IBooking | null> => {
   // 1. Validate the ID format
   if (!Types.ObjectId.isValid(bookingId)) {
-    return null; // Return null if ID is invalid
+    throw new BadRequestError("Invalid booking ID format");
   }
 
   // 2. Find the booking and update it

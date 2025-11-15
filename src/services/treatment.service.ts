@@ -7,7 +7,7 @@ import {
   IThreatment,
   UpdateTreatmentData,
 } from "../types/treatment.types";
-import { BadRequestError } from "../utils/ApiError";
+import { BadRequestError, ConflictError } from "../utils/ApiError";
 
 export const createTreatment = async (
   data: CreateTreatmentInput
@@ -16,7 +16,7 @@ export const createTreatment = async (
   const existingTreatment = await Threatment.findOne({ name: data.name });
 
   if (existingTreatment) {
-    throw new BadRequestError("A treatment with this name already exists.");
+    throw new ConflictError("A treatment with this name already exists.");
   }
 
   // 2. Create and save the new treatment
@@ -33,7 +33,7 @@ export const updateTreatment = async (
 ): Promise<IThreatment | null> => {
   // 1. Validate the ID format
   if (!Types.ObjectId.isValid(id)) {
-    return null;
+    throw new BadRequestError("Invalid treatment ID format");
   }
 
   // 2. Find and update the document
@@ -53,7 +53,7 @@ export const deleteTreatment = async (
 ): Promise<IThreatment | null> => {
   // 1. Validate the ID format
   if (!Types.ObjectId.isValid(id)) {
-    return null;
+    throw new BadRequestError("Invalid treatment ID format");
   }
 
   // 2. Find and delete the document

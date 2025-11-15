@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from 'express';
+
 /**
  * Base class for all API errors.
  */
@@ -61,3 +63,23 @@ export class NotFoundError extends ApiError {
     super(404, message, errors);
   }
 }
+
+/**
+ * 409 Conflict Error
+ */
+export class ConflictError extends ApiError {
+  constructor(message: string = 'Conflict', errors: any[] = []) {
+    super(409, message, errors);
+  }
+}
+
+/**
+ * Wraps an async function to catch errors and pass them to the next middleware.
+ * @param fn The async function to wrap.
+ * @returns A function that can be used as an Express route handler.
+ */
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    fn(req, res, next).catch(next);
+  };
+};

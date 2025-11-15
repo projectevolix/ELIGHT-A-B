@@ -1,14 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../utils/ApiError";
+import { BadRequestError, asyncHandler } from "../utils/ApiError";
 import * as doctorService from "../services/doctor.service";
 import { ApiResponse } from "../utils/ApiResponse";
 
-export const createDoctorUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createDoctorUser = asyncHandler(
+  async (req: Request, res: Response) => {
     // 1. Get user details from the request body
     const { email, password, f_name, l_name, phoneNumber, id_card_number } =
       req.body;
@@ -40,7 +36,5 @@ export const createDoctorUser = async (
         "Doctor user created successfully"
       )
     );
-  } catch (error) {
-    next(error);
   }
-};
+);

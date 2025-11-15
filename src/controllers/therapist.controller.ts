@@ -1,15 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../config/logger.config";
 import * as therapistService from "../services/therapist.service";
-import { BadRequestError } from "../utils/ApiError";
+import { BadRequestError, asyncHandler } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 
-export const createTherapistUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+export const createTherapistUser = asyncHandler(
+  async (req: Request, res: Response) => {
     const { email, password, f_name, l_name, phoneNumber, id_card_number } =
       req.body;
 
@@ -40,7 +36,5 @@ export const createTherapistUser = async (
           "Therapist user created successfully"
         )
       );
-  } catch (error) {
-    next(error);
   }
-};
+);
