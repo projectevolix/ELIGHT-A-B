@@ -1,23 +1,18 @@
-import { NextFunction, Request, Response } from "express";
+import { FilterQuery, Types } from "mongoose";
 import { Cabin } from "../models/cabin.model";
 import { CreateCabinInput, ICabin, IPaginatedCabins, UpdateCabinInput } from "../types/cabin.types";
 import { BadRequestError, ConflictError } from "../utils/ApiError";
 import { IQueryOptions } from "../types/treatment.types";
-import { FilterQuery, Types } from "mongoose";
 
 export const createCabin = async (
   data: CreateCabinInput
 ): Promise<ICabin> => {
-
   const existingCabin = await Cabin.findOne({ name: data.name });
   if (existingCabin) {
     throw new ConflictError("A cabin with this name already exists.");
   }
 
-  const newCabin = new Cabin({
-    ...data,
-  });
-
+  const newCabin = new Cabin(data);
   await newCabin.save();
   return newCabin;
 };
@@ -25,24 +20,19 @@ export const createCabin = async (
 export const getAllCabins = async (
   options: IQueryOptions
 ): Promise<IPaginatedCabins> => {
-  // 1. Set pagination defaults
   const page = options.page || 1;
   const limit = options.limit || 10;
   const skip = (page - 1) * limit;
 
-  // 2. Set filter to get all active cabins
   const filter: FilterQuery<ICabin> = { is_active: true };
 
-  // 3. Run queries in parallel
   const [cabins, totalDocs] = await Promise.all([
     Cabin.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     Cabin.countDocuments(filter),
   ]);
 
-  // 4. Calculate total pages
   const totalPages = Math.ceil(totalDocs / limit);
 
-  // 5. Return paginated response
   return {
     data: cabins,
     meta: {

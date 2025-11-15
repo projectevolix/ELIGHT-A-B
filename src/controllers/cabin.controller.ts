@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { BadRequestError, NotFoundError, asyncHandler } from "../utils/ApiError";
 import * as cabinService from "../services/cabin.service";
 import { ApiResponse } from "../utils/ApiResponse";
-import {  Types } from "mongoose";
+import { Types } from "mongoose";
 
 export const createCabin = asyncHandler(
   async (req: Request, res: Response) => {
@@ -19,11 +19,7 @@ export const createCabin = asyncHandler(
     });
 
     res.status(201).json(
-      new ApiResponse(
-        201, 
-        newCabin, 
-        "Cabin created successfully"
-      )
+      new ApiResponse(201, newCabin, "Cabin created successfully")
     );
   }
 );
@@ -41,9 +37,9 @@ export const getCabinById = asyncHandler(
       throw new NotFoundError("Cabin not found");
     }
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, cabin, "Cabin retrieved successfully"));
+    res.status(200).json(
+      new ApiResponse(200, cabin, "Cabin retrieved successfully")
+    );
   }
 );
 
@@ -54,9 +50,9 @@ export const getAllCabins = asyncHandler(
 
     const result = await cabinService.getAllCabins({ page, limit });
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, result, "Cabins retrieved successfully"));
+    res.status(200).json(
+      new ApiResponse(200, result, "Cabins retrieved successfully")
+    );
   }
 );
 
@@ -65,10 +61,11 @@ export const updateCabin = asyncHandler(
     const { cabinId } = req.params;
     const { name, description, imageURL } = req.body;
 
-    const updateData: { [key: string]: any } = {};
-    if (name) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
-    if (imageURL !== undefined) updateData.imageURL = imageURL;
+    const updateData: { [key: string]: any } = {
+      ...(name && { name }),
+      ...(description !== undefined && { description }),
+      ...(imageURL !== undefined && { imageURL }),
+    };
 
     if (Object.keys(updateData).length === 0) {
       throw new BadRequestError("No valid fields provided for update.");
@@ -80,9 +77,9 @@ export const updateCabin = asyncHandler(
       throw new NotFoundError("Cabin not found");
     }
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, updatedCabin, "Cabin updated successfully"));
+    res.status(200).json(
+      new ApiResponse(200, updatedCabin, "Cabin updated successfully")
+    );
   }
 );
 
@@ -96,8 +93,8 @@ export const deleteCabin = asyncHandler(
       throw new NotFoundError("Cabin not found");
     }
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, null, "Cabin deleted successfully"));
+    res.status(200).json(
+      new ApiResponse(200, null, "Cabin deleted successfully")
+    );
   }
 );
