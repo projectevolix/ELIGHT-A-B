@@ -147,22 +147,52 @@ export const getMyBookings = async (
 export const getCheckedInBookingsForDoctor = async (
   options: IQueryOptions
 ): Promise<IPaginatedBookings> => {
-  // Set today's date at midnight
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // 1. Set pagination defaults
+  const page = options.page || 1;
+  const limit = options.limit || 10;
+  const skip = (page - 1) * limit;
 
-  // Filter for bookings that are currently "checked in":
-  // - checkInDate <= today (guest has already checked in)
-  // - checkOutDate >= today (guest hasn't checked out yet)
-  // - status is ACCEPTED
-  // - booking is active
+  // 2. Set the date filter for "today"
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0); // Start of today
+
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999); // End of today
+
+  // 3. Build the filter for "Today's Sessions"
   const filter: FilterQuery<IBooking> = {
-    checkInDate: { $lte: today },
-    checkOutDate: { $gte: today },
+    // The session must have started on or before the END of today
+    checkInDate: { $lte: todayEnd }, 
+    
+    // The session must end on or after the START of today
+    checkOutDate: { $gte: todayStart }, 
+
     status: BookingStatus.Accepted,
     is_active: true,
   };
 
-  return getPaginatedBookings(filter, options, { checkOutDate: 1 });
+  // 4. Run queries in parallel
+  const [bookings, totalDocs] = await Promise.all([
+    Booking.find(filter)
+      .populate("userId", "f_name l_name email")
+      .sort({ checkOutDate: 1 }) 
+      .skip(skip)
+      .limit(limit),
+    Booking.countDocuments(filter),
+  ]);
+
+  // 5. Calculate total pages
+  const totalPages = Math.ceil(totalDocs / limit);
+
+  // 6. Return the paginated response
+  return {
+    data: bookings,
+    meta: {
+      page,
+      limit,
+      totalDocs,
+      totalPages,
+    },
+  };
 };
 
